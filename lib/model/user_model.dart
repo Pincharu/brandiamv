@@ -4,6 +4,7 @@ class UserModel {
   final String email;
   final String phone;
   final int cart;
+  final String? address;
 
   UserModel({
     required this.id,
@@ -11,6 +12,7 @@ class UserModel {
     required this.email,
     required this.phone,
     required this.cart,
+    this.address,
   });
 
   factory UserModel.fromMap(Map data, String id) {
@@ -20,6 +22,8 @@ class UserModel {
       email: data['email'],
       phone: data['phone'],
       cart: data['cart'],
+      address: data['address'],
+
     );
   }
 

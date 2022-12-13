@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../app/app_routing.dart';
 import '../../shared/footer.dart';
 import '../../shared/header.dart';
+import '../login/authcore.dart';
 import 'orders_core.dart';
 
 class OrdersPage extends StatelessWidget {
@@ -12,12 +15,149 @@ class OrdersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var model = Get.put<OrdersCore>(OrdersCore());
+    var authCore = Get.find<AuthCore>();
 
     return Scaffold(
+       appBar: AppBar(
+        backgroundColor: Colors.blue,
+        toolbarHeight: 120,
+        elevation: 0,
+        flexibleSpace: SizedBox(
+          width: context.screenWidth < 1200 ? context.screenWidth : 1200,
+          child: Column(
+            children: [
+              10.heightBox,
+              Obx(
+                () => authCore.firebaseUser.value != null
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          "Brandiamv".text.size(20).white.bold.make(),
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue, elevation: 0),
+                                  onPressed: () async {
+                                    final Uri url = Uri.parse('tel:7771898');
+                                    if (!await launchUrl(url)) {
+                                      throw 'Could not launch $url';
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.phone, size: 14),
+                                      5.widthBox,
+                                      "Call us".text.bold.white.size(14).make(),
+                                    ],
+                                  ).p12()),
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue, elevation: 0),
+                                  onPressed: () async {
+                                    final Uri url = Uri.parse(
+                                        'https://api.whatsapp.com/send?phone=+9607771898');
+                                    if (!await launchUrl(url)) {
+                                      throw 'Could not launch $url';
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.whatsapp, size: 14),
+                                      5.widthBox,
+                                      "Whatsapp".text.bold.white.size(14).make(),
+                                    ],
+                                  ).p12()),
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue, elevation: 0),
+                                  onPressed: () {
+                                    Get.toNamed(Routes.main);
+
+                                  },
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.home, size: 14),
+                                      5.widthBox,
+                                      "Home".text.bold.white.size(14).make(),
+                                    ],
+                                  ).p12()),
+                               ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue, elevation: 0),
+                                  onPressed: () {
+                                    Get.toNamed(Routes.orders);
+
+                                  },
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.newspaper, size: 14),
+                                      5.widthBox,
+                                      "Orders".text.bold.white.size(14).make(),
+                                    ],
+                                  ).p12()),
+                            ],
+                          )
+                        ],
+                      ).px12()
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          "Brandiamv".text.size(20).white.bold.make(),
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue, elevation: 0),
+                                  onPressed: () async {
+                                    final Uri url = Uri.parse('tel:7771898');
+                                    if (!await launchUrl(url)) {
+                                      throw 'Could not launch $url';
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.phone, size: 14),
+                                      5.widthBox,
+                                      "Call us".text.bold.white.size(14).make(),
+                                    ],
+                                  ).p12()),
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue, elevation: 0),
+                                  onPressed: () async {
+                                    final Uri url = Uri.parse(
+                                        'https://api.whatsapp.com/send?phone=+9607771898');
+                                    if (!await launchUrl(url)) {
+                                      throw 'Could not launch $url';
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.whatsapp, size: 14),
+                                      5.widthBox,
+                                      "Whatsapp".text.bold.white.size(14).make(),
+                                    ],
+                                  ).p12()),
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue, elevation: 0),
+                                  onPressed: () {
+                                    loginAlert(context, authCore);
+                                  },
+                                  child: "Login".text.bold.white.size(14).make().p12()),
+                            ],
+                          )
+                        ],
+                      ).px12(),
+              ),
+             
+            ],
+          ),
+        ),
+      ),
       body: Column(
         children: [
-          20.heightBox,
-          const AppHeader(page: 1),
           20.heightBox,
           Obx(
             () => model.auth.firebaseUser.value == null
@@ -98,12 +238,11 @@ class OrdersPage extends StatelessWidget {
                         children: ["Looks like there are no Orders".text.size(20).make()],
                       ).p20())
                         .roundedSM
-                        .color(Colors.orange[300]!)
+                        .color(Colors.blue[300]!)
                         .makeCentered()
                         .p12()
                         .centered(),
           ).expand(),
-          const AppFooter(page: 0),
         ],
       ),
     );

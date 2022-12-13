@@ -1,4 +1,5 @@
 import 'package:brandiamv/app/app_assets.dart';
+import 'package:brandiamv/app/app_routing.dart';
 import 'package:brandiamv/model/product_model.dart';
 import 'package:brandiamv/shared/image_placer.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
@@ -88,7 +89,22 @@ class _HomePageState extends State<HomePage> {
                               ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.blue, elevation: 0),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Get.toNamed(Routes.main);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.home, size: 14),
+                                      5.widthBox,
+                                      "Home".text.bold.white.size(14).make(),
+                                    ],
+                                  ).p12()),
+                                   ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue, elevation: 0),
+                                  onPressed: () {
+                                    Get.toNamed(Routes.orders);
+                                  },
                                   child: Row(
                                     children: [
                                       const Icon(Icons.newspaper, size: 14),
@@ -248,8 +264,7 @@ class _HomePageState extends State<HomePage> {
 
                   SideSheet.right(
                       width: context.screenWidth > 600 ? 600 : context.screenWidth,
-                      body: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      body: ListView(
                         children: [
                           20.heightBox,
                           "Checkout".text.size(20).bold.make(),
@@ -326,7 +341,9 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                                onPressed: () {},
+                                onPressed: () {
+                                  model.checkout();
+                                },
                                 child: 'Checkout'.text.size(16).bold.white.make().p8(),
                               ).expand(),
                             ],

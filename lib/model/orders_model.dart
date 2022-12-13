@@ -5,7 +5,7 @@ class OrdersModel {
   final String receipt;
   final String address;
   final List<dynamic> products;
-  final String total;
+  final double total;
   final String user;
   final Timestamp orderTime;
 
@@ -25,7 +25,7 @@ class OrdersModel {
       receipt: data['receipt'],
       address: data['address'],
       products: data['products'],
-      total: data['total'],
+      total: checkDouble(data['total']),
       user: data['user'],
       orderTime: data['orderTime'],
     );

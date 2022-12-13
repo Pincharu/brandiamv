@@ -9,17 +9,17 @@ class AppRoutes {
   static final routes = [
     GetPage(
       name: Routes.main,
-      transition: Transition.zoom,
+      transition: Transition.downToUp,
       page: () => const HomePage(),
     ),
     GetPage(
       name: Routes.orders,
-      transition: Transition.zoom,
+      transition: Transition.downToUp,
       page: () => const OrdersPage(),
     ),
     GetPage(
       name: Routes.checkout,
-      transition: Transition.zoom,
+      transition: Transition.downToUp,
       page: () => const CheckoutPage(),
     ),
   ];

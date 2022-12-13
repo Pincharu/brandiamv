@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 
 import '../../model/category_model.dart';
 import '../../model/product_model.dart';
+import '../../shared/loading.dart';
+import '../../shared/snackbar.dart';
 import '../login/authcore.dart';
 
 class HomeCore extends GetxController {
@@ -45,6 +47,8 @@ class HomeCore extends GetxController {
     if (authCore.firestoreUser.value != null) {
       nameTxt.text = authCore.firestoreUser.value!.name;
       phoneTxt.text = authCore.firestoreUser.value!.phone;
+      addressTxt.text = authCore.firestoreUser.value!.address ?? '';
+
     }
   }
 
@@ -142,6 +146,54 @@ class HomeCore extends GetxController {
       }
     });
 
-    print(categoryTotal);
+    // print(categoryTotal);
+  }
+
+  Future checkout() async {
+    cartList.value = [];
+    String dateTime = DateTime.now().microsecondsSinceEpoch.toString();
+    List<Map> productsList = [];
+
+    for (int i = 0; i < cartList.length; i++) {
+      productsList.add({
+        "id": cartList[i].id,
+        "name": cartList[i].name,
+        "price": cartList[i].price,
+        "quantity": cartList[i].quantity,
+      });
+    }
+
+    showLoadingIndicator();
+    final path = 'orders/$dateTime';
+    final ref = FirebaseFirestore.instance.doc(path);
+    await ref.set({
+      'address': addressTxt.text,
+      'products': productsList,
+      'total': cartTotal.value,
+      'user': authCore.getUser,
+      'orderTime': DateTime.now(),
+    });
+
+    final userpath = 'users/${authCore.getUser}';
+    final userref = FirebaseFirestore.instance.doc(userpath);
+    await userref.update({
+      'address' : addressTxt.text,
+
+    });
+
+    for (int i = 0; i < productsList.length; i++) {
+      final productpath = 'product/${productsList[i]['id']}';
+      final productref = FirebaseFirestore.instance.doc(productpath);
+      await productref.update({'stock': FieldValue.increment(-productsList[i]['quantity'])});
+
+      final cartpath = 'users/${authCore.getUser}/cart/${productsList[i]['id']}';
+      final cartref = FirebaseFirestore.instance.doc(cartpath);
+      await cartref.delete();
+    }
+
+    hideLoadingIndicator();
+
+    Get.back();
+    sucessSnackbar("Ordered Successfully", "Order Received");
   }
 }
