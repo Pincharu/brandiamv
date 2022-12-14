@@ -66,10 +66,11 @@ class AuthCore extends GetxController {
 
   //Method to handle user sign in using email and password
   signInWithEmailAndPassword() async {
+    emailController.text = '';
+    passwordController.text = '';
     showLoadingIndicator();
     try {
-      await _auth.signInWithEmailAndPassword(
-          email: emailController.text.trim(), password: passwordController.text.trim());
+      await _auth.signInWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim());
       emailController.clear();
       passwordController.clear();
       hideLoadingIndicator();

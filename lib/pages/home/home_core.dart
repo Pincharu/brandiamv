@@ -150,7 +150,6 @@ class HomeCore extends GetxController {
   }
 
   Future checkout() async {
-    cartList.value = [];
     String dateTime = DateTime.now().microsecondsSinceEpoch.toString();
     List<Map> productsList = [];
 
@@ -193,6 +192,7 @@ class HomeCore extends GetxController {
 
     hideLoadingIndicator();
 
+    cartList.value = [];
     Get.back();
     sucessSnackbar("Ordered Successfully", "Order Received");
   }
