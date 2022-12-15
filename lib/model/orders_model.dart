@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrdersModel {
   final String id;
-  final String receipt;
   final String address;
   final List<dynamic> products;
   final double total;
@@ -11,7 +10,6 @@ class OrdersModel {
 
   OrdersModel({
     required this.id,
-    required this.receipt,
     required this.address,
     required this.products,
     required this.total,
@@ -22,7 +20,6 @@ class OrdersModel {
   factory OrdersModel.fromMap(Map data, String id) {
     return OrdersModel(
       id: id,
-      receipt: data['receipt'],
       address: data['address'],
       products: data['products'],
       total: checkDouble(data['total']),

@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
 
-import '../pages/checkout/checkout_page.dart';
-import '../pages/home/home_page.dart';
-import '../pages/orders/orders_page.dart';
+import '../pages/admin/admin_orders/admin_orders_page.dart';
+import '../pages/admin/admin_product/admin_product_page.dart';
+import '../pages/client/home/home_page.dart';
+import '../pages/client/orders/orders_page.dart';
 
 class AppRoutes {
   AppRoutes._(); //this is to prevent anyone from instantiating this object
@@ -18,9 +19,14 @@ class AppRoutes {
       page: () => const OrdersPage(),
     ),
     GetPage(
-      name: Routes.checkout,
+      name: Routes.adminProduct,
       transition: Transition.downToUp,
-      page: () => const CheckoutPage(),
+      page: () => const AdminProductPage(),
+    ),
+    GetPage(
+      name: Routes.adminOrders,
+      transition: Transition.downToUp,
+      page: () => const AdminOrdersPage(),
     ),
   ];
 }
@@ -30,10 +36,6 @@ class Routes {
 
   static const String main = '/';
   static const String orders = '/orders';
-  static const String contact = '/contact';
-  static const String productDetails = '/productDetails';
-  static const String checkout = '/checkout';
-  static const String about = '/about';
-  static const String privacy = '/privacy';
-  static const String terms = '/terms';
+  static const String adminProduct = '/adminProduct';
+  static const String adminOrders = '/adminOrders';
 }

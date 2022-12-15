@@ -1,19 +1,18 @@
-import 'package:brandiamv/app/app_assets.dart';
-import 'package:brandiamv/app/app_routing.dart';
-import 'package:brandiamv/model/product_model.dart';
-import 'package:brandiamv/shared/image_placer.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:easy_table/easy_table.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:side_sheet/side_sheet.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../../app/app_colors.dart';
-import '../../shared/textfield.dart';
-import '../login/authcore.dart';
+import '../../../app/app_assets.dart';
+import '../../../app/app_colors.dart';
+import '../../../model/product_model.dart';
+import '../../../shared/header.dart';
+import '../../../shared/image_placer.dart';
+import '../../../shared/textfield.dart';
+import '../../../shared/authcore.dart';
 import 'home_core.dart';
 
 class HomePage extends StatefulWidget {
@@ -44,129 +43,7 @@ class _HomePageState extends State<HomePage> {
           width: context.screenWidth < 1200 ? context.screenWidth : 1200,
           child: Column(
             children: [
-              10.heightBox,
-              Obx(
-                () => authCore.firebaseUser.value != null
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          "Brandiamv".text.size(20).white.bold.make(),
-                          Row(
-                            children: [
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue, elevation: 0),
-                                  onPressed: () async {
-                                    final Uri url = Uri.parse('tel:7771898');
-                                    if (!await launchUrl(url)) {
-                                      throw 'Could not launch $url';
-                                    }
-                                  },
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.phone, size: 14),
-                                      5.widthBox,
-                                      "Call us".text.bold.white.size(14).make(),
-                                    ],
-                                  ).p12()),
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue, elevation: 0),
-                                  onPressed: () async {
-                                    final Uri url = Uri.parse(
-                                        'https://api.whatsapp.com/send?phone=+9607771898');
-                                    if (!await launchUrl(url)) {
-                                      throw 'Could not launch $url';
-                                    }
-                                  },
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.whatsapp, size: 14),
-                                      5.widthBox,
-                                      "Whatsapp".text.bold.white.size(14).make(),
-                                    ],
-                                  ).p12()),
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue, elevation: 0),
-                                  onPressed: () {
-                                    Get.toNamed(Routes.main);
-                                  },
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.home, size: 14),
-                                      5.widthBox,
-                                      "Home".text.bold.white.size(14).make(),
-                                    ],
-                                  ).p12()),
-                                   ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue, elevation: 0),
-                                  onPressed: () {
-                                    Get.toNamed(Routes.orders);
-                                  },
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.newspaper, size: 14),
-                                      5.widthBox,
-                                      "Orders".text.bold.white.size(14).make(),
-                                    ],
-                                  ).p12()),
-                            ],
-                          )
-                        ],
-                      ).px12()
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          "Brandiamv".text.size(20).white.bold.make(),
-                          Row(
-                            children: [
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue, elevation: 0),
-                                  onPressed: () async {
-                                    final Uri url = Uri.parse('tel:7771898');
-                                    if (!await launchUrl(url)) {
-                                      throw 'Could not launch $url';
-                                    }
-                                  },
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.phone, size: 14),
-                                      5.widthBox,
-                                      "Call us".text.bold.white.size(14).make(),
-                                    ],
-                                  ).p12()),
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue, elevation: 0),
-                                  onPressed: () async {
-                                    final Uri url = Uri.parse(
-                                        'https://api.whatsapp.com/send?phone=+9607771898');
-                                    if (!await launchUrl(url)) {
-                                      throw 'Could not launch $url';
-                                    }
-                                  },
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.whatsapp, size: 14),
-                                      5.widthBox,
-                                      "Whatsapp".text.bold.white.size(14).make(),
-                                    ],
-                                  ).p12()),
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue, elevation: 0),
-                                  onPressed: () {
-                                    loginAlert(context, authCore);
-                                  },
-                                  child: "Login".text.bold.white.size(14).make().p12()),
-                            ],
-                          )
-                        ],
-                      ).px12(),
-              ),
+              const AppHeader(),
               Obx(
                 () => Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -489,123 +366,5 @@ Widget list(BuildContext context, ScrollController scrollController, HomeCore mo
       ),
       100.heightBox,
     ],
-  );
-}
-
-loginAlert(BuildContext context, AuthCore authCore) {
-  return showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("Login", style: TextStyle(fontWeight: FontWeight.bold)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: authCore.emailController,
-              decoration: textFieldDefault.copyWith(labelText: "Email"),
-            ),
-            10.heightBox,
-            TextField(
-              controller: authCore.passwordController,
-              obscureText: true,
-              decoration: textFieldDefault.copyWith(labelText: "Password"),
-            ),
-          ],
-        ),
-        actions: [
-          Row(
-            children: [
-              TextButton(
-                style: TextButton.styleFrom(backgroundColor: kcolorOrange),
-                onPressed: () async {
-                  authCore.signInWithEmailAndPassword();
-                  Get.back();
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text("Login", style: TextStyle(color: Colors.white)),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Get.back();
-                  registerAlert(context, authCore);
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text("Register", style: TextStyle(color: Colors.black54)),
-                ),
-              ),
-            ],
-          )
-        ],
-      );
-    },
-  );
-}
-
-registerAlert(BuildContext context, AuthCore authCore) {
-  return showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("Register", style: TextStyle(fontWeight: FontWeight.bold)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: authCore.nameController,
-              decoration: textFieldDefault.copyWith(labelText: "Name"),
-            ),
-            10.heightBox,
-            TextField(
-              controller: authCore.phoneController,
-              decoration: textFieldDefault.copyWith(labelText: "Phone"),
-            ),
-            10.heightBox,
-            TextField(
-              controller: authCore.addressController,
-              decoration: textFieldDefault.copyWith(labelText: "(Optional) Address"),
-            ),
-            10.heightBox,
-            TextField(
-              controller: authCore.emailController,
-              decoration: textFieldDefault.copyWith(labelText: "(Login) Email"),
-            ),
-            10.heightBox,
-            TextField(
-              controller: authCore.passwordController,
-              obscureText: true,
-              decoration: textFieldDefault.copyWith(labelText: "(Login) Password"),
-            ),
-          ],
-        ),
-        actions: [
-          Row(
-            children: [
-              TextButton(
-                style: TextButton.styleFrom(backgroundColor: kcolorOrange),
-                onPressed: () async {
-                  authCore.registerWithEmailAndPassword();
-                  Get.back();
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text("Register", style: TextStyle(color: Colors.white)),
-                ),
-              ),
-              TextButton(
-                onPressed: () => Get.back(),
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text("Cancel", style: TextStyle(color: Colors.black54)),
-                ),
-              ),
-            ],
-          )
-        ],
-      );
-    },
   );
 }

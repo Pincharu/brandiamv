@@ -3,11 +3,11 @@ import 'package:easy_table/easy_table.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
-import '../../model/category_model.dart';
-import '../../model/product_model.dart';
-import '../../shared/loading.dart';
-import '../../shared/snackbar.dart';
-import '../login/authcore.dart';
+import '../../../model/category_model.dart';
+import '../../../model/product_model.dart';
+import '../../../shared/loading.dart';
+import '../../../shared/snackbar.dart';
+import '../../../shared/authcore.dart';
 
 class HomeCore extends GetxController {
   var scrollTop = true.obs;
@@ -48,7 +48,6 @@ class HomeCore extends GetxController {
       nameTxt.text = authCore.firestoreUser.value!.name;
       phoneTxt.text = authCore.firestoreUser.value!.phone;
       addressTxt.text = authCore.firestoreUser.value!.address ?? '';
-
     }
   }
 
@@ -166,18 +165,20 @@ class HomeCore extends GetxController {
     final path = 'orders/$dateTime';
     final ref = FirebaseFirestore.instance.doc(path);
     await ref.set({
+      'name': nameTxt.text,
+      'phone': phoneTxt.text,
       'address': addressTxt.text,
       'products': productsList,
       'total': cartTotal.value,
       'user': authCore.getUser,
       'orderTime': DateTime.now(),
+      'read': false,
     });
 
     final userpath = 'users/${authCore.getUser}';
     final userref = FirebaseFirestore.instance.doc(userpath);
     await userref.update({
-      'address' : addressTxt.text,
-
+      'address': addressTxt.text,
     });
 
     for (int i = 0; i < productsList.length; i++) {

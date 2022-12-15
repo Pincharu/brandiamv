@@ -43,6 +43,7 @@ dependencies:
   #? State Management
   get: ^4.6.5
   velocity_x: ^3.6.0
+  url_strategy: ^0.2.0
   #? Services
   side_sheet: ^1.0.3
   transparent_image: ^2.0.0

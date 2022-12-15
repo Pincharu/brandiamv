@@ -1,4 +1,6 @@
-import 'package:brandiamv/shared/loading.dart';
+import 'package:url_strategy/url_strategy.dart';
+
+import 'shared/loading.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -6,7 +8,7 @@ import 'package:get/get.dart';
 
 import 'app/app_colors.dart';
 import 'app/app_routing.dart';
-import 'pages/login/authcore.dart';
+import 'shared/authcore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +35,7 @@ void main() async {
   // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // await Firebase.initializeApp();
+  setPathUrlStrategy();
   runApp(const MyApp());
 }
 

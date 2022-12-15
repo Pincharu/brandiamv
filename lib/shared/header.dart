@@ -1,119 +1,207 @@
-import 'package:brandiamv/shared/textfield.dart';
+import 'textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:side_sheet/side_sheet.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../app/app_colors.dart';
 import '../app/app_routing.dart';
-import '../pages/cart/cart_page.dart';
-import '../pages/login/authcore.dart';
+import 'authcore.dart';
 
 class AppHeader extends StatelessWidget {
-  final int page;
-  final Color? color;
-  const AppHeader({Key? key, required this.page, this.color}) : super(key: key);
+  const AppHeader({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var authCore = Get.find<AuthCore>();
     userLogged(authCore);
 
-    return Container(
-      color: color ?? Colors.transparent,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              10.widthBox,
-
-              if (context.screenWidth < 550) 10.widthBox,
-              "Rasdhooni"
-                  .text
-                  .size(20)
-                  .color(kcolorOrange)
-                  .bold
-                  .make()
-                  .p12()
-                  .onInkTap(() => Get.toNamed(Routes.main)),
-              // const ImagePlacer(
-              //   image: 'assets/logo_transparent.png',
-              //   height: 40,
-              //   width: 80,
-              // ),
-            ],
-          ),
-          if (context.screenWidth > 550)
-            Obx(
-              () => authCore.firestoreUser.value != null
-                  ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      page == 0
-                          ? "SHOP".text.size(16).color(kcolorOrange).bold.make().p8()
-                          : "SHOP"
-                              .text
-                              .size(16)
-                              .black
-                              .make()
-                              .p8()
-                              .onInkTap(() => Get.toNamed(Routes.main)),
-                      30.widthBox,
-                      page == 1
-                          ? "ORDERS".text.size(16).color(kcolorOrange).bold.make().p8()
-                          : "ORDERS"
-                              .text
-                              .size(16)
-                              .black
-                              .make()
-                              .p8()
-                              .onInkTap(() => Get.toNamed(Routes.orders)),
-                      30.widthBox,
-                      page == 2
-                          ? "Contact".text.size(16).color(kcolorOrange).bold.make().p8()
-                          : "Contact"
-                              .text
-                              .size(16)
-                              .black
-                              .make()
-                              .p8()
-                              .onInkTap(() => Get.toNamed(Routes.contact)),
-                      30.widthBox,
-                      10.widthBox,
-                    ])
-                  : Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      page == 0
-                          ? "SHOP".text.size(16).color(kcolorOrange).bold.make().p12()
-                          : "SHOP".text.size(16).black.make().p12().onInkTap(() {
-                              Get.back();
-                              Get.toNamed(Routes.main);
-                            }),
-                      10.widthBox,
-                      page == 2
-                          ? "Contact".text.size(16).color(kcolorOrange).bold.make().p8()
-                          : "Contact"
-                              .text
-                              .size(16)
-                              .black
-                              .make()
-                              .p8()
-                              .onInkTap(() => Get.toNamed(Routes.contact)),
-                      30.widthBox,
-                      VxBox(child: "Login".text.size(18).white.make().pSymmetric(h: 20, v: 8))
-                          .roundedLg
-                          .color(kcolorOrange)
-                          .make()
-                          .onInkTap(() {
-                        loginAlert(context, authCore);
-                      }),
-                      10.widthBox,
-                    ]),
-            )
-        ],
-      ),
-    );
+    return Obx(
+      () => authCore.firebaseUser.value != null ? loggedHeader(context) : loggedOutHeader(context),
+    ).pOnly(top: 10);
   }
+}
+
+Widget loggedHeader(BuildContext context) {
+  var authCore = Get.find<AuthCore>();
+
+  return context.screenWidth <= 850
+      ? Column(
+          children: [
+            "Brandiamv".text.size(20).white.bold.make(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () async {
+                      final Uri url = Uri.parse('tel:7771898');
+                      if (!await launchUrl(url)) {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: const Icon(Icons.phone, size: 14).p8()),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () async {
+                      final Uri url = Uri.parse('https://api.whatsapp.com/send?phone=+9607771898');
+                      if (!await launchUrl(url)) {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: const Icon(Icons.whatsapp, size: 14).p8()),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () {
+                      Get.toNamed(Routes.main);
+                    },
+                    child: const Icon(Icons.home, size: 14).p8()),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () {
+                      Get.toNamed(Routes.orders);
+                    },
+                    child: const Icon(Icons.newspaper, size: 14).p8()),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () async {
+                      await authCore.signOut();
+                      Get.offAllNamed(Routes.main);
+                    },
+                    child: const Icon(Icons.logout, size: 14).p8()),
+              ],
+            ).px12(),
+          ],
+        )
+      : Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            "Brandiamv".text.size(20).white.bold.make(),
+            Row(
+              children: [
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () async {
+                      final Uri url = Uri.parse('tel:7771898');
+                      if (!await launchUrl(url)) {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.phone, size: 14),
+                        5.widthBox,
+                        "Call us".text.white.size(14).make(),
+                      ],
+                    ).p12()),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () async {
+                      final Uri url = Uri.parse('https://api.whatsapp.com/send?phone=+9607771898');
+                      if (!await launchUrl(url)) {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.whatsapp, size: 14),
+                        5.widthBox,
+                        "Whatsapp".text.white.size(14).make(),
+                      ],
+                    ).p12()),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () {
+                      Get.toNamed(Routes.main);
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.home, size: 14),
+                        5.widthBox,
+                        "Home".text.white.size(14).make(),
+                      ],
+                    ).p12()),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () {
+                      Get.toNamed(Routes.orders);
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.newspaper, size: 14),
+                        5.widthBox,
+                        "Orders".text.white.size(14).make(),
+                      ],
+                    ).p12()),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () async {
+                      await authCore.signOut();
+                      Get.offAllNamed(Routes.main);
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.logout, size: 14),
+                        5.widthBox,
+                        "Logout".text.white.size(14).make(),
+                      ],
+                    ).p12()),
+              ],
+            ),
+          ],
+        ).px12();
+}
+
+Widget loggedOutHeader(BuildContext context) {
+  var authCore = Get.find<AuthCore>();
+
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      "Brandiamv".text.size(20).white.bold.make(),
+      Row(
+        children: [
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+              onPressed: () async {
+                final Uri url = Uri.parse('tel:7771898');
+                if (!await launchUrl(url)) {
+                  throw 'Could not launch $url';
+                }
+              },
+              child: Row(
+                children: [
+                  const Icon(Icons.phone, size: 14),
+                  5.widthBox,
+                  "Call us".text.bold.white.size(14).make(),
+                ],
+              ).p12()),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+              onPressed: () async {
+                final Uri url = Uri.parse('https://api.whatsapp.com/send?phone=+9607771898');
+                if (!await launchUrl(url)) {
+                  throw 'Could not launch $url';
+                }
+              },
+              child: Row(
+                children: [
+                  const Icon(Icons.whatsapp, size: 14),
+                  5.widthBox,
+                  "Whatsapp".text.bold.white.size(14).make(),
+                ],
+              ).p12()),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+              onPressed: () {
+                loginAlert(context, authCore);
+              },
+              child: "Login".text.bold.white.size(14).make().p12()),
+        ],
+      )
+    ],
+  ).px12();
 }
 
 registerAlert(BuildContext context, AuthCore authCore) {
@@ -242,12 +330,4 @@ Future userLogged(authCore) async {
       authCore.onReady();
     }
   });
-}
-
-cartDrawer(BuildContext context) {
-  return SideSheet.right(
-      width: context.screenWidth > 600 ? 600 : context.screenWidth,
-      barrierColor: kcolorOrange.withOpacity(.8),
-      body: const CartPage(),
-      context: context);
 }

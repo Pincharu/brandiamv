@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../model/user_model.dart';
-import '../../shared/loading.dart';
-import '../../shared/snackbar.dart';
-import '../home/home_page.dart';
+import '../model/user_model.dart';
+import 'loading.dart';
+import 'snackbar.dart';
+import '../pages/client/home/home_page.dart';
 
 class AuthCore extends GetxController {
   TextEditingController nameController = TextEditingController();
@@ -66,11 +66,10 @@ class AuthCore extends GetxController {
 
   //Method to handle user sign in using email and password
   signInWithEmailAndPassword() async {
-    emailController.text = '';
-    passwordController.text = '';
     showLoadingIndicator();
     try {
-      await _auth.signInWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim());
+      await _auth.signInWithEmailAndPassword(
+          email: emailController.text.trim(), password: passwordController.text.trim());
       emailController.clear();
       passwordController.clear();
       hideLoadingIndicator();
@@ -93,6 +92,9 @@ class AuthCore extends GetxController {
       hideLoadingIndicator();
       errorSnackbar('Sign in Error', 'Error Sigining in');
     }
+
+    emailController.text = '';
+    passwordController.text = '';
   }
 
   Future<bool> verifedRefferal() async {
