@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        toolbarHeight: 120,
+        toolbarHeight: context.screenWidth < 850 ? 150 : 120,
         elevation: 0,
         flexibleSpace: SizedBox(
           width: context.screenWidth < 1200 ? context.screenWidth : 1200,
@@ -94,148 +94,319 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      floatingActionButton: Obx(
-        () => model.cartList.isNotEmpty
-            ? VxBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        "Checkout".text.white.size(16).bold.make(),
-                        "${model.cartList.length} Items".text.white.size(16).make(),
-                      ],
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        "Total".text.white.size(16).make(),
-                        "Rf ${model.cartTotal}".text.white.size(16).bold.make(),
-                      ],
-                    ),
-                  ],
-                ).p12(),
-              )
-                .roundedSM
-                .color(Colors.green)
-                .make()
-                .w(context.screenWidth > 600 ? 600 : context.screenWidth)
-                .onInkTap(
-                () {
-                  model.cartListTable = EasyTableModel<ProductModel>(rows: [
-                    for (var i = 0; i < model.cartList.length; i++) model.cartList[i]
-                  ], columns: [
-                    EasyTableColumn(name: 'Name', stringValue: (row) => row.name, width: 270),
-                    EasyTableColumn(name: 'Price', stringValue: (row) => row.price.toString()),
-                    EasyTableColumn(
-                        name: 'Quantity', stringValue: (row) => row.quantity.toString()),
-                    EasyTableColumn(
-                        name: 'Total',
-                        stringValue: (row) => (row.price * row.quantity!).toString()),
-                  ]);
-
-                  model.setUserDetails();
-
-                  SideSheet.right(
-                      width: context.screenWidth > 600 ? 600 : context.screenWidth,
-                      body: ListView(
+      floatingActionButton: context.screenWidth > 850
+          ? Obx(
+              () => model.cartList.isNotEmpty
+                  ? VxBox(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          20.heightBox,
-                          "Checkout".text.size(20).bold.make(),
-                          10.heightBox,
-                          SizedBox(
-                              height: 300, child: EasyTable<ProductModel>(model.cartListTable)),
-                          Container(
-                            decoration: BoxDecoration(border: Border.all(width: .5)),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                "Order Details".text.size(14).bold.make(),
-                                for (var i = 0; i < model.categoryTotal.length; i++)
-                                  if (model.categoryQty.values.elementAt(i) != 0)
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        "${model.categoryTotal.keys.elementAt(i)}"
-                                            .text
-                                            .size(14)
-                                            .make(),
-                                        Row(
-                                          children: [
-                                            "x${model.categoryQty.values.elementAt(i)}"
-                                                .text
-                                                .size(14)
-                                                .make(),
-                                            5.widthBox,
-                                            "Rf ${model.categoryTotal.values.elementAt(i)}"
-                                                .text
-                                                .size(14)
-                                                .make(),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    "Sub Total".text.size(14).bold.make(),
-                                    "Rf ${model.cartTotal}".text.size(14).bold.make(),
-                                  ],
-                                ),
-                              ],
-                            ).p8(),
-                          ),
-                          10.heightBox,
-                          Container(
-                            decoration: BoxDecoration(border: Border.all(width: .5)),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                "User Details".text.size(14).bold.make(),
-                                5.heightBox,
-                                TextField(
-                                  controller: model.nameTxt,
-                                  decoration: textFieldDefault.copyWith(labelText: "Name"),
-                                ),
-                                5.heightBox,
-                                TextField(
-                                  controller: model.phoneTxt,
-                                  decoration: textFieldDefault.copyWith(labelText: "Phone"),
-                                ),
-                                5.heightBox,
-                                TextField(
-                                  controller: model.addressTxt,
-                                  decoration: textFieldDefault.copyWith(labelText: "Address"),
-                                ),
-                              ],
-                            ).p8(),
-                          ),
-                          10.heightBox,
-                          Row(
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                                onPressed: () {
-                                  model.checkout();
-                                },
-                                child: 'Checkout'.text.size(16).bold.white.make().p8(),
-                              ).expand(),
+                              "Checkout".text.white.size(16).bold.make(),
+                              "${model.cartList.length} Items".text.white.size(16).make(),
+                            ],
+                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              "Total".text.white.size(16).make(),
+                              "Rf ${model.cartTotal}".text.white.size(16).bold.make(),
                             ],
                           ),
                         ],
-                      ).px12(),
-                      context: context);
+                      ).p12(),
+                    )
+                      .roundedSM
+                      .color(Colors.green)
+                      .make()
+                      .w(context.screenWidth > 600 ? 600 : context.screenWidth)
+                      .onInkTap(
+                      () {
+                        model.cartListTable = EasyTableModel<ProductModel>(rows: [
+                          for (var i = 0; i < model.cartList.length; i++) model.cartList[i]
+                        ], columns: [
+                          EasyTableColumn(name: 'Name', stringValue: (row) => row.name, width: 270),
+                          EasyTableColumn(
+                              name: 'Price', stringValue: (row) => row.price.toString()),
+                          EasyTableColumn(
+                              name: 'Quantity', stringValue: (row) => row.quantity.toString()),
+                          EasyTableColumn(
+                              name: 'Total',
+                              stringValue: (row) => (row.price * row.quantity!).toString()),
+                        ]);
 
-                  // for (var i = 0; i < model.cartList.length; i++) {
-                  //   print("${model.cartList[i].name} ${model.cartList[i].stock}");
-                  // }
-                },
-              )
-            : const SizedBox(),
-      ),
+                        model.setUserDetails();
+
+                        SideSheet.right(
+                            width: context.screenWidth > 600 ? 600 : context.screenWidth,
+                            body: ListView(
+                              children: [
+                                20.heightBox,
+                                Row(
+                                  children: [
+                                    const Icon(Icons.arrow_back),
+                                    5.widthBox,
+                                    "Checkout".text.size(20).bold.make(),
+                                  ],
+                                ).onInkTap(() => Get.back()),
+                                10.heightBox,
+                                SizedBox(
+                                    height: 300,
+                                    child: EasyTable<ProductModel>(model.cartListTable)),
+                                Container(
+                                  decoration: BoxDecoration(border: Border.all(width: .5)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      "Order Details".text.size(14).bold.make(),
+                                      for (var i = 0; i < model.categoryTotal.length; i++)
+                                        if (model.categoryQty.values.elementAt(i) != 0)
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              "${model.categoryTotal.keys.elementAt(i)}"
+                                                  .text
+                                                  .size(14)
+                                                  .make(),
+                                              Row(
+                                                children: [
+                                                  "x${model.categoryQty.values.elementAt(i)}"
+                                                      .text
+                                                      .size(14)
+                                                      .make(),
+                                                  5.widthBox,
+                                                  "Rf ${model.categoryTotal.values.elementAt(i)}"
+                                                      .text
+                                                      .size(14)
+                                                      .make(),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          "Sub Total".text.size(14).bold.make(),
+                                          "Rf ${model.cartTotal}".text.size(14).bold.make(),
+                                        ],
+                                      ),
+                                    ],
+                                  ).p8(),
+                                ),
+                                10.heightBox,
+                                Container(
+                                  decoration: BoxDecoration(border: Border.all(width: .5)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      "User Details".text.size(14).bold.make(),
+                                      5.heightBox,
+                                      TextField(
+                                        controller: model.nameTxt,
+                                        decoration: textFieldDefault.copyWith(labelText: "Name"),
+                                      ),
+                                      5.heightBox,
+                                      TextField(
+                                        controller: model.phoneTxt,
+                                        decoration: textFieldDefault.copyWith(labelText: "Phone"),
+                                      ),
+                                      5.heightBox,
+                                      TextField(
+                                        controller: model.addressTxt,
+                                        decoration: textFieldDefault.copyWith(labelText: "Address"),
+                                      ),
+                                    ],
+                                  ).p8(),
+                                ),
+                                10.heightBox,
+                                Row(
+                                  children: [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                                      onPressed: () {
+                                        model.checkout();
+                                      },
+                                      child: 'Checkout'.text.size(16).bold.white.make().p8(),
+                                    ).expand(),
+                                  ],
+                                ),
+                              ],
+                            ).px12(),
+                            context: context);
+
+                        // for (var i = 0; i < model.cartList.length; i++) {
+                        //   print("${model.cartList[i].name} ${model.cartList[i].stock}");
+                        // }
+                      },
+                    )
+                  : const SizedBox(),
+            )
+          : const SizedBox(),
+      bottomNavigationBar: context.screenWidth < 850
+          ? Obx(
+              () => model.cartList.isNotEmpty
+                  ? Row(
+                      children: [
+                        VxBox(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  "Checkout".text.white.size(16).bold.make(),
+                                  "${model.cartList.length} Items".text.white.size(16).make(),
+                                ],
+                              ),
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  "Total".text.white.size(16).make(),
+                                  "Rf ${model.cartTotal}".text.white.size(16).bold.make(),
+                                ],
+                              ),
+                            ],
+                          ).p12(),
+                        )
+                            .roundedSM
+                            .color(Colors.green)
+                            .make()
+                            .w(context.screenWidth > 600 ? 600 : context.screenWidth)
+                            .onInkTap(
+                          () {
+                            model.cartListTable = EasyTableModel<ProductModel>(rows: [
+                              for (var i = 0; i < model.cartList.length; i++) model.cartList[i]
+                            ], columns: [
+                              EasyTableColumn(
+                                  name: 'Name', stringValue: (row) => row.name, width: 270),
+                              EasyTableColumn(
+                                  name: 'Price', stringValue: (row) => row.price.toString()),
+                              EasyTableColumn(
+                                  name: 'Quantity', stringValue: (row) => row.quantity.toString()),
+                              EasyTableColumn(
+                                  name: 'Total',
+                                  stringValue: (row) => (row.price * row.quantity!).toString()),
+                            ]);
+
+                            model.setUserDetails();
+
+                            SideSheet.right(
+                                width: context.screenWidth > 600 ? 600 : context.screenWidth,
+                                body: ListView(
+                                  children: [
+                                    20.heightBox,
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.arrow_back),
+                                        5.widthBox,
+                                        "Checkout".text.size(20).bold.make(),
+                                      ],
+                                    ).onInkTap(() => Get.back()),
+                                    10.heightBox,
+                                    SizedBox(
+                                        height: 300,
+                                        child: EasyTable<ProductModel>(model.cartListTable)),
+                                    Container(
+                                      decoration: BoxDecoration(border: Border.all(width: .5)),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          "Order Details".text.size(14).bold.make(),
+                                          for (var i = 0; i < model.categoryTotal.length; i++)
+                                            if (model.categoryQty.values.elementAt(i) != 0)
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  "${model.categoryTotal.keys.elementAt(i)}"
+                                                      .text
+                                                      .size(14)
+                                                      .make(),
+                                                  Row(
+                                                    children: [
+                                                      "x${model.categoryQty.values.elementAt(i)}"
+                                                          .text
+                                                          .size(14)
+                                                          .make(),
+                                                      5.widthBox,
+                                                      "Rf ${model.categoryTotal.values.elementAt(i)}"
+                                                          .text
+                                                          .size(14)
+                                                          .make(),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              "Sub Total".text.size(14).bold.make(),
+                                              "Rf ${model.cartTotal}".text.size(14).bold.make(),
+                                            ],
+                                          ),
+                                        ],
+                                      ).p8(),
+                                    ),
+                                    10.heightBox,
+                                    Container(
+                                      decoration: BoxDecoration(border: Border.all(width: .5)),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          "User Details".text.size(14).bold.make(),
+                                          5.heightBox,
+                                          TextField(
+                                            controller: model.nameTxt,
+                                            decoration:
+                                                textFieldDefault.copyWith(labelText: "Name"),
+                                          ),
+                                          5.heightBox,
+                                          TextField(
+                                            controller: model.phoneTxt,
+                                            decoration:
+                                                textFieldDefault.copyWith(labelText: "Phone"),
+                                          ),
+                                          5.heightBox,
+                                          TextField(
+                                            controller: model.addressTxt,
+                                            decoration:
+                                                textFieldDefault.copyWith(labelText: "Address"),
+                                          ),
+                                        ],
+                                      ).p8(),
+                                    ),
+                                    10.heightBox,
+                                    Row(
+                                      children: [
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.blue),
+                                          onPressed: () {
+                                            model.checkout();
+                                          },
+                                          child: 'Checkout'.text.size(16).bold.white.make().p8(),
+                                        ).expand(),
+                                      ],
+                                    ),
+                                  ],
+                                ).px12(),
+                                context: context);
+
+                            // for (var i = 0; i < model.cartList.length; i++) {
+                            //   print("${model.cartList[i].name} ${model.cartList[i].stock}");
+                            // }
+                          },
+                        ).expand(),
+                      ],
+                    )
+                  : const SizedBox(),
+            )
+          : const SizedBox(),
     );
   }
 }

@@ -156,52 +156,87 @@ Widget loggedHeader(BuildContext context) {
 Widget loggedOutHeader(BuildContext context) {
   var authCore = Get.find<AuthCore>();
 
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      "Brandiamv".text.size(20).white.bold.make(),
-      Row(
-        children: [
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
-              onPressed: () async {
-                final Uri url = Uri.parse('tel:7771898');
-                if (!await launchUrl(url)) {
-                  throw 'Could not launch $url';
-                }
-              },
-              child: Row(
-                children: [
-                  const Icon(Icons.phone, size: 14),
-                  5.widthBox,
-                  "Call us".text.bold.white.size(14).make(),
-                ],
-              ).p12()),
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
-              onPressed: () async {
-                final Uri url = Uri.parse('https://api.whatsapp.com/send?phone=+9607771898');
-                if (!await launchUrl(url)) {
-                  throw 'Could not launch $url';
-                }
-              },
-              child: Row(
-                children: [
-                  const Icon(Icons.whatsapp, size: 14),
-                  5.widthBox,
-                  "Whatsapp".text.bold.white.size(14).make(),
-                ],
-              ).p12()),
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
-              onPressed: () {
-                loginAlert(context, authCore);
-              },
-              child: "Login".text.bold.white.size(14).make().p12()),
-        ],
-      )
-    ],
-  ).px12();
+  return context.screenWidth <= 850
+      ? Column(
+          children: [
+            "Brandiamv".text.size(20).white.bold.make(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () async {
+                      final Uri url = Uri.parse('tel:7771898');
+                      if (!await launchUrl(url)) {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: const Icon(Icons.phone, size: 14).p8()),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () async {
+                      final Uri url = Uri.parse('https://api.whatsapp.com/send?phone=+9607771898');
+                      if (!await launchUrl(url)) {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: const Icon(Icons.whatsapp, size: 14).p8()),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () {
+                      loginAlert(context, authCore);
+                    },
+                    child: "Login".text.bold.white.size(14).make().p12()),
+              ],
+            ).px12(),
+          ],
+        )
+      : Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            "Brandiamv".text.size(20).white.bold.make(),
+            Row(
+              children: [
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () async {
+                      final Uri url = Uri.parse('tel:7771898');
+                      if (!await launchUrl(url)) {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.phone, size: 14),
+                        5.widthBox,
+                        "Call us".text.bold.white.size(14).make(),
+                      ],
+                    ).p12()),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () async {
+                      final Uri url = Uri.parse('https://api.whatsapp.com/send?phone=+9607771898');
+                      if (!await launchUrl(url)) {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.whatsapp, size: 14),
+                        5.widthBox,
+                        "Whatsapp".text.bold.white.size(14).make(),
+                      ],
+                    ).p12()),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
+                    onPressed: () {
+                      loginAlert(context, authCore);
+                    },
+                    child: "Login".text.bold.white.size(14).make().p12()),
+              ],
+            )
+          ],
+        ).px12();
 }
 
 registerAlert(BuildContext context, AuthCore authCore) {

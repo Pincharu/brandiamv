@@ -1,5 +1,3 @@
-import 'package:url_strategy/url_strategy.dart';
-
 import 'shared/loading.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +33,6 @@ void main() async {
   // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // await Firebase.initializeApp();
-  setPathUrlStrategy();
   runApp(const MyApp());
 }
 
