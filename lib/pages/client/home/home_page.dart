@@ -177,7 +177,7 @@ class _HomePageState extends State<HomePage> {
 Widget list(BuildContext context, ScrollController scrollController, HomeCore model) {
   return context.screenWidth < 600
       ? ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.all(20),
           shrinkWrap: true,
           itemCount: model.currentList.length,
