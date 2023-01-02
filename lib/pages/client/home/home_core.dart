@@ -165,6 +165,9 @@ class HomeCore extends GetxController {
       currentList[i].quantity = 0;
     }
 
+    bars.value = 0;
+    bags.value = 0;
+
     hideLoadingIndicator();
 
     Get.back();
