@@ -15,22 +15,26 @@ class HomeCore extends GetxController {
   var category = 'All'.obs;
   var authCore = Get.find<AuthCore>();
 
+  var selectedAtoll = 'Select Atoll'.obs;
+  var selectedIsland = 'Select Island'.obs;
+
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   var productList = RxList<ProductModel>([]);
   var currentList = RxList<ProductModel>([]);
-  var cartList = RxList<ProductModel>([]);
-  var cartListIDs = RxList<String>([]);
   var categoryList = RxList<CategoryModel>([]);
   EasyTableModel<ProductModel>? cartListTable;
   TextEditingController nameTxt = TextEditingController();
   TextEditingController phoneTxt = TextEditingController();
   TextEditingController addressTxt = TextEditingController();
+  TextEditingController noteTxt = TextEditingController();
+
+  var bags = 0.obs;
+  var bars = 0.obs;
 
   var categoryName = ['All'].obs;
   int selectedTab = 0;
   var cartTotal = 0.0.obs;
-  var categoryTotal = {};
-  var categoryQty = {};
+  var categoryQty = {}.obs;
 
   @override
   void onReady() {
@@ -38,7 +42,6 @@ class HomeCore extends GetxController {
     productList.bindStream(productStream());
     ever(productList, setProducts);
     ever(categoryList, setCategory);
-    cartListIDs.value = cartList.map((cart) => cart.id).toList();
 
     super.onReady();
   }
@@ -47,6 +50,8 @@ class HomeCore extends GetxController {
     if (authCore.firestoreUser.value != null) {
       nameTxt.text = authCore.firestoreUser.value!.name;
       phoneTxt.text = authCore.firestoreUser.value!.phone;
+      selectedAtoll.value = authCore.firestoreUser.value!.atoll ?? 'Select Atoll';
+      selectedIsland.value = authCore.firestoreUser.value!.island ?? 'Select Island';
       addressTxt.text = authCore.firestoreUser.value!.address ?? '';
     }
   }
@@ -110,55 +115,24 @@ class HomeCore extends GetxController {
 
     for (var i = 0; i < categoryList.length; i++) {
       categoryName.add(categoryList[i].name);
-      categoryTotal.addAll({categoryList[i].name: 0});
       categoryQty.addAll({categoryList[i].name: 0});
     }
-  }
-
-  calculateCartTotal() {
-    cartTotal.value = 0;
-    for (var i = 0; i < cartList.length; i++) {
-      cartTotal.value = cartTotal.value + (cartList[i].price * cartList[i].quantity!);
-    }
-
-    categoryTotal.forEach((key, value) {
-      categoryTotal[key] = 0;
-    });
-
-    categoryQty.forEach((key, value) {
-      categoryQty[key] = 0;
-    });
-
-    categoryTotal.forEach((key, value) {
-      for (var i = 0; i < cartList.length; i++) {
-        if (cartList[i].category == key) {
-          categoryTotal[key] += (cartList[i].price * cartList[i].quantity!);
-        }
-      }
-    });
-
-    categoryQty.forEach((key, value) {
-      for (var i = 0; i < cartList.length; i++) {
-        if (cartList[i].category == key) {
-          categoryQty[key] += (cartList[i].quantity!);
-        }
-      }
-    });
-
-    // print(categoryTotal);
   }
 
   Future checkout() async {
     String dateTime = DateTime.now().microsecondsSinceEpoch.toString();
     List<Map> productsList = [];
 
-    for (int i = 0; i < cartList.length; i++) {
-      productsList.add({
-        "id": cartList[i].id,
-        "name": cartList[i].name,
-        "price": cartList[i].price,
-        "quantity": cartList[i].quantity,
-      });
+    for (int i = 0; i < currentList.length; i++) {
+      if ((currentList[i].quantity ?? 0) != 0) {
+        productsList.add({
+          "id": currentList[i].id,
+          "name": currentList[i].name,
+          "quantity": currentList[i].quantity,
+          "itemCode": currentList[i].itemCode,
+          "price": 0.0,
+        });
+      }
     }
 
     showLoadingIndicator();
@@ -167,33 +141,32 @@ class HomeCore extends GetxController {
     await ref.set({
       'name': nameTxt.text,
       'phone': phoneTxt.text,
+      'atoll': selectedAtoll.value,
+      'island': selectedIsland.value,
+      'note': noteTxt.text,
       'address': addressTxt.text,
       'products': productsList,
-      'total': cartTotal.value,
       'user': authCore.getUser,
       'orderTime': DateTime.now(),
       'read': false,
+      'bars': bars.value,
+      'bags': bags.value,
     });
 
     final userpath = 'users/${authCore.getUser}';
     final userref = FirebaseFirestore.instance.doc(userpath);
     await userref.update({
       'address': addressTxt.text,
+      'atoll': selectedAtoll.value,
+      'island': selectedIsland.value,
     });
 
-    for (int i = 0; i < productsList.length; i++) {
-      final productpath = 'product/${productsList[i]['id']}';
-      final productref = FirebaseFirestore.instance.doc(productpath);
-      await productref.update({'stock': FieldValue.increment(-productsList[i]['quantity'])});
-
-      final cartpath = 'users/${authCore.getUser}/cart/${productsList[i]['id']}';
-      final cartref = FirebaseFirestore.instance.doc(cartpath);
-      await cartref.delete();
+    for (int i = 0; i < currentList.length; i++) {
+      currentList[i].quantity = 0;
     }
 
     hideLoadingIndicator();
 
-    cartList.value = [];
     Get.back();
     sucessSnackbar("Ordered Successfully", "Order Received");
   }

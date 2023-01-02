@@ -1,5 +1,4 @@
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
-import 'package:easy_table/easy_table.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -8,11 +7,12 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../../app/app_assets.dart';
 import '../../../app/app_colors.dart';
-import '../../../model/product_model.dart';
+import '../../../app/maldives_islands.dart';
+import '../../../shared/add_product.dart';
 import '../../../shared/header.dart';
 import '../../../shared/image_placer.dart';
-import '../../../shared/textfield.dart';
 import '../../../shared/authcore.dart';
+import '../../../shared/textfield.dart';
 import 'home_core.dart';
 
 class HomePage extends StatefulWidget {
@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: context.screenWidth > 850
           ? Obx(
-              () => model.cartList.isNotEmpty
+              () => model.bags.value != 0 || model.bars.value != 0
                   ? VxBox(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,15 +106,12 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               "Checkout".text.white.size(16).bold.make(),
-                              "${model.cartList.length} Items".text.white.size(16).make(),
-                            ],
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              "Total".text.white.size(16).make(),
-                              "Rf ${model.cartTotal}".text.white.size(16).bold.make(),
+                              "Quantity ${(model.bags.value + model.bars.value)}"
+                                  .text
+                                  .white
+                                  .size(16)
+                                  .bold
+                                  .make(),
                             ],
                           ),
                         ],
@@ -126,121 +123,8 @@ class _HomePageState extends State<HomePage> {
                       .w(context.screenWidth > 600 ? 600 : context.screenWidth)
                       .onInkTap(
                       () {
-                        model.cartListTable = EasyTableModel<ProductModel>(rows: [
-                          for (var i = 0; i < model.cartList.length; i++) model.cartList[i]
-                        ], columns: [
-                          EasyTableColumn(name: 'Name', stringValue: (row) => row.name, width: 270),
-                          EasyTableColumn(
-                              name: 'Price', stringValue: (row) => row.price.toString()),
-                          EasyTableColumn(
-                              name: 'Quantity', stringValue: (row) => row.quantity.toString()),
-                          EasyTableColumn(
-                              name: 'Total',
-                              stringValue: (row) => (row.price * row.quantity!).toString()),
-                        ]);
-
                         model.setUserDetails();
-
-                        SideSheet.right(
-                            width: context.screenWidth > 600 ? 600 : context.screenWidth,
-                            body: ListView(
-                              children: [
-                                20.heightBox,
-                                Row(
-                                  children: [
-                                    const Icon(Icons.arrow_back),
-                                    5.widthBox,
-                                    "Checkout".text.size(20).bold.make(),
-                                  ],
-                                ).onInkTap(() => Get.back()),
-                                10.heightBox,
-                                SizedBox(
-                                    height: 300,
-                                    child: EasyTable<ProductModel>(model.cartListTable)),
-                                Container(
-                                  decoration: BoxDecoration(border: Border.all(width: .5)),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      "Order Details".text.size(14).bold.make(),
-                                      for (var i = 0; i < model.categoryTotal.length; i++)
-                                        if (model.categoryQty.values.elementAt(i) != 0)
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              "${model.categoryTotal.keys.elementAt(i)}"
-                                                  .text
-                                                  .size(14)
-                                                  .make(),
-                                              Row(
-                                                children: [
-                                                  "x${model.categoryQty.values.elementAt(i)}"
-                                                      .text
-                                                      .size(14)
-                                                      .make(),
-                                                  5.widthBox,
-                                                  "Rf ${model.categoryTotal.values.elementAt(i)}"
-                                                      .text
-                                                      .size(14)
-                                                      .make(),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          "Sub Total".text.size(14).bold.make(),
-                                          "Rf ${model.cartTotal}".text.size(14).bold.make(),
-                                        ],
-                                      ),
-                                    ],
-                                  ).p8(),
-                                ),
-                                10.heightBox,
-                                Container(
-                                  decoration: BoxDecoration(border: Border.all(width: .5)),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      "User Details".text.size(14).bold.make(),
-                                      5.heightBox,
-                                      TextField(
-                                        controller: model.nameTxt,
-                                        decoration: textFieldDefault.copyWith(labelText: "Name"),
-                                      ),
-                                      5.heightBox,
-                                      TextField(
-                                        controller: model.phoneTxt,
-                                        decoration: textFieldDefault.copyWith(labelText: "Phone"),
-                                      ),
-                                      5.heightBox,
-                                      TextField(
-                                        controller: model.addressTxt,
-                                        decoration: textFieldDefault.copyWith(labelText: "Address"),
-                                      ),
-                                    ],
-                                  ).p8(),
-                                ),
-                                10.heightBox,
-                                Row(
-                                  children: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                                      onPressed: () {
-                                        model.checkout();
-                                      },
-                                      child: 'Checkout'.text.size(16).bold.white.make().p8(),
-                                    ).expand(),
-                                  ],
-                                ),
-                              ],
-                            ).px12(),
-                            context: context);
-
-                        // for (var i = 0; i < model.cartList.length; i++) {
-                        //   print("${model.cartList[i].name} ${model.cartList[i].stock}");
-                        // }
+                        cartDrawer(context, model);
                       },
                     )
                   : const SizedBox(),
@@ -248,7 +132,7 @@ class _HomePageState extends State<HomePage> {
           : const SizedBox(),
       bottomNavigationBar: context.screenWidth < 850
           ? Obx(
-              () => model.cartList.isNotEmpty
+              () => model.bags.value != 0 || model.bars.value != 0
                   ? Row(
                       children: [
                         VxBox(
@@ -260,15 +144,12 @@ class _HomePageState extends State<HomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   "Checkout".text.white.size(16).bold.make(),
-                                  "${model.cartList.length} Items".text.white.size(16).make(),
-                                ],
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  "Total".text.white.size(16).make(),
-                                  "Rf ${model.cartTotal}".text.white.size(16).bold.make(),
+                                  "Quantity ${(model.bags.value + model.bars.value)}"
+                                      .text
+                                      .white
+                                      .size(16)
+                                      .bold
+                                      .make(),
                                 ],
                               ),
                             ],
@@ -280,126 +161,8 @@ class _HomePageState extends State<HomePage> {
                             .w(context.screenWidth > 600 ? 600 : context.screenWidth)
                             .onInkTap(
                           () {
-                            model.cartListTable = EasyTableModel<ProductModel>(rows: [
-                              for (var i = 0; i < model.cartList.length; i++) model.cartList[i]
-                            ], columns: [
-                              EasyTableColumn(
-                                  name: 'Name', stringValue: (row) => row.name, width: 270),
-                              EasyTableColumn(
-                                  name: 'Price', stringValue: (row) => row.price.toString()),
-                              EasyTableColumn(
-                                  name: 'Quantity', stringValue: (row) => row.quantity.toString()),
-                              EasyTableColumn(
-                                  name: 'Total',
-                                  stringValue: (row) => (row.price * row.quantity!).toString()),
-                            ]);
-
                             model.setUserDetails();
-
-                            SideSheet.right(
-                                width: context.screenWidth > 600 ? 600 : context.screenWidth,
-                                body: ListView(
-                                  children: [
-                                    20.heightBox,
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.arrow_back),
-                                        5.widthBox,
-                                        "Checkout".text.size(20).bold.make(),
-                                      ],
-                                    ).onInkTap(() => Get.back()),
-                                    10.heightBox,
-                                    SizedBox(
-                                        height: 300,
-                                        child: EasyTable<ProductModel>(model.cartListTable)),
-                                    Container(
-                                      decoration: BoxDecoration(border: Border.all(width: .5)),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          "Order Details".text.size(14).bold.make(),
-                                          for (var i = 0; i < model.categoryTotal.length; i++)
-                                            if (model.categoryQty.values.elementAt(i) != 0)
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  "${model.categoryTotal.keys.elementAt(i)}"
-                                                      .text
-                                                      .size(14)
-                                                      .make(),
-                                                  Row(
-                                                    children: [
-                                                      "x${model.categoryQty.values.elementAt(i)}"
-                                                          .text
-                                                          .size(14)
-                                                          .make(),
-                                                      5.widthBox,
-                                                      "Rf ${model.categoryTotal.values.elementAt(i)}"
-                                                          .text
-                                                          .size(14)
-                                                          .make(),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              "Sub Total".text.size(14).bold.make(),
-                                              "Rf ${model.cartTotal}".text.size(14).bold.make(),
-                                            ],
-                                          ),
-                                        ],
-                                      ).p8(),
-                                    ),
-                                    10.heightBox,
-                                    Container(
-                                      decoration: BoxDecoration(border: Border.all(width: .5)),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          "User Details".text.size(14).bold.make(),
-                                          5.heightBox,
-                                          TextField(
-                                            controller: model.nameTxt,
-                                            decoration:
-                                                textFieldDefault.copyWith(labelText: "Name"),
-                                          ),
-                                          5.heightBox,
-                                          TextField(
-                                            controller: model.phoneTxt,
-                                            decoration:
-                                                textFieldDefault.copyWith(labelText: "Phone"),
-                                          ),
-                                          5.heightBox,
-                                          TextField(
-                                            controller: model.addressTxt,
-                                            decoration:
-                                                textFieldDefault.copyWith(labelText: "Address"),
-                                          ),
-                                        ],
-                                      ).p8(),
-                                    ),
-                                    10.heightBox,
-                                    Row(
-                                      children: [
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.blue),
-                                          onPressed: () {
-                                            model.checkout();
-                                          },
-                                          child: 'Checkout'.text.size(16).bold.white.make().p8(),
-                                        ).expand(),
-                                      ],
-                                    ),
-                                  ],
-                                ).px12(),
-                                context: context);
-
-                            // for (var i = 0; i < model.cartList.length; i++) {
-                            //   print("${model.cartList[i].name} ${model.cartList[i].stock}");
-                            // }
+                            cartDrawer(context, model);
                           },
                         ).expand(),
                       ],
@@ -412,130 +175,314 @@ class _HomePageState extends State<HomePage> {
 }
 
 Widget list(BuildContext context, ScrollController scrollController, HomeCore model) {
-  return ListView(
-    physics: const BouncingScrollPhysics(),
-    controller: scrollController,
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: context.screenWidth,
-            child: Obx(
-              () => model.currentList.isNotEmpty
-                  ? GridView.builder(
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: context.screenWidth > 600 ? 350 : 400,
-                        childAspectRatio: 0.8,
-                        crossAxisSpacing: 20,
-                        mainAxisSpacing: 20,
-                      ),
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(20),
-                      shrinkWrap: true,
-                      itemCount: model.currentList.length,
-                      itemBuilder: (ctx, i) {
-                        var currentProduct = model.currentList[i];
+  return context.screenWidth < 600
+      ? ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(20),
+          shrinkWrap: true,
+          itemCount: model.currentList.length,
+          itemBuilder: (ctx, i) {
+            var currentProduct = model.currentList[i];
 
-                        return VxBox(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              8.heightBox,
-                              (currentProduct.image != null)
-                                  ? Hero(
-                                      tag: currentProduct.id,
-                                      child:
-                                          Image.network(currentProduct.image!, fit: BoxFit.cover),
-                                    ).expand()
-                                  : const ImagePlacer(image: kimageProduct, boxfit: BoxFit.contain)
-                                      .p12()
-                                      .expand(),
-                              currentProduct.name.text.capitalize.size(16).make().px8(),
-                              "ITEM CODE: ${currentProduct.itemCode}"
-                                  .text
-                                  .size(14)
-                                  .color(Colors.black54)
-                                  .make()
-                                  .px8(),
-                              10.heightBox,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      "RF ${currentProduct.price}"
-                                          .text
-                                          .capitalize
-                                          .size(16)
-                                          .bold
-                                          .make()
-                                          .px8(),
-                                      currentProduct.nameDesc.text.capitalize
-                                          .size(12)
-                                          .color(Colors.black54)
-                                          .make()
-                                          .px8(),
-                                    ],
-                                  ),
-                                  Obx(
-                                    () => (model.cartListIDs.contains(currentProduct.id))
-                                        ? VxStepper(
-                                            defaultValue: 1,
-                                            disableInput: true,
-                                            min: 0,
-                                            max: currentProduct.stock,
-                                            onChange: (value) {
-                                              if (value == 0) {
-                                                model.cartList.removeWhere(
-                                                    (cart) => cart.id == currentProduct.id);
-                                                model.cartListIDs.removeWhere(
-                                                    (cartID) => cartID == currentProduct.id);
-                                              } else {
-                                                int currentID;
-                                                currentID = model.cartList.indexWhere(
-                                                    (cart) => cart.id == currentProduct.id);
+            return ListTile(
+                    tileColor: const Color.fromARGB(221, 214, 214, 214),
+                    leading: (currentProduct.image != null)
+                        ? SizedBox(
+                            height: 120,
+                            width: 80,
+                            child: Hero(
+                              tag: currentProduct.id,
+                              child: Image.network(currentProduct.image!, fit: BoxFit.contain),
+                            ),
+                          )
+                        : const SizedBox(
+                            height: 120,
+                            width: 80,
+                            child: ImagePlacer(image: kimageProduct, boxfit: BoxFit.contain)),
+                    title: currentProduct.name.text.capitalize.size(16).make().px8(),
+                    subtitle: "ITEM CODE: ${currentProduct.itemCode}"
+                        .text
+                        .size(14)
+                        .color(Colors.black54)
+                        .make()
+                        .px8(),
+                    trailing: AddProduct(i: i))
+                .pOnly(bottom: 4);
+          })
+      : ListView(
+          physics: const BouncingScrollPhysics(),
+          controller: scrollController,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: context.screenWidth,
+                  child: Obx(
+                    () => model.currentList.isNotEmpty
+                        ? GridView.builder(
+                            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: 250,
+                              childAspectRatio: 0.8,
+                              crossAxisSpacing: 20,
+                              mainAxisSpacing: 20,
+                            ),
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: const EdgeInsets.all(20),
+                            shrinkWrap: true,
+                            itemCount: model.currentList.length,
+                            itemBuilder: (ctx, i) {
+                              var currentProduct = model.currentList[i];
 
-                                                model.cartList[currentID].quantity = value;
-                                              }
-                                              model.calculateCartTotal();
-                                            },
-                                          )
-                                        : ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.blue),
-                                            onPressed: (currentProduct.stock > 0)
-                                                ? () {
-                                                    var addedProduct = currentProduct;
-                                                    addedProduct.quantity = 1;
-                                                    model.cartList.add(addedProduct);
-                                                    model.cartListIDs.add(addedProduct.id);
-                                                    model.calculateCartTotal();
-                                                  }
-                                                : null,
-                                            child: (currentProduct.stock > 0)
-                                                ? "+ Add".text.size(14).white.make()
-                                                : "Out of Stock".text.size(14).white.make(),
-                                          ).pOnly(right: 4),
-                                  )
-                                ],
-                              ),
-                              8.heightBox,
-                            ],
-                          ),
-                        ).rounded.color(const Color.fromARGB(221, 214, 214, 214)).make();
-                      },
-                    )
-                  : SizedBox(
-                      height: context.screenHeight,
-                      child:
-                          LoadingAnimationWidget.inkDrop(color: kcolorOrange, size: 30).centered()),
+                              return VxBox(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    8.heightBox,
+                                    (currentProduct.image != null)
+                                        ? Hero(
+                                            tag: currentProduct.id,
+                                            child: Image.network(currentProduct.image!,
+                                                fit: BoxFit.contain),
+                                          ).expand()
+                                        : const ImagePlacer(
+                                                image: kimageProduct, boxfit: BoxFit.contain)
+                                            .p12()
+                                            .expand(),
+                                    currentProduct.name.text.capitalize.size(16).make().px8(),
+                                    "ITEM CODE: ${currentProduct.itemCode}"
+                                        .text
+                                        .size(14)
+                                        .color(Colors.black54)
+                                        .make()
+                                        .px8(),
+                                    10.heightBox,
+                                    AddProduct(i: i).centered(),
+                                    8.heightBox,
+                                  ],
+                                ),
+                              ).rounded.color(const Color.fromARGB(221, 214, 214, 214)).make();
+                            },
+                          )
+                        : SizedBox(
+                            height: context.screenHeight,
+                            child: LoadingAnimationWidget.inkDrop(color: kcolorOrange, size: 30)
+                                .centered()),
+                  ),
+                ).expand(),
+              ],
             ),
-          ).expand(),
+            100.heightBox,
+          ],
+        );
+}
+
+Future<dynamic> cartDrawer(BuildContext context, HomeCore model) {
+  return SideSheet.right(
+      width: context.screenWidth > 600 ? 600 : context.screenWidth,
+      body: ListView(
+        children: [
+          20.heightBox,
+          Row(
+            children: [
+              const Icon(Icons.arrow_back),
+              5.widthBox,
+              "Checkout".text.size(20).bold.make(),
+            ],
+          ).onInkTap(() => Get.back()),
+          10.heightBox,
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(20),
+            shrinkWrap: true,
+            itemCount: model.currentList.length,
+            itemBuilder: (ctx, i) {
+              var currentProduct = model.currentList[i];
+
+              return ((currentProduct.quantity ?? 0) == 0)
+                  ? const SizedBox()
+                  : ListTile(
+                      tileColor: const Color.fromARGB(221, 214, 214, 214),
+                      leading: (currentProduct.image != null)
+                          ? SizedBox(
+                              height: 120,
+                              width: 80,
+                              child: Hero(
+                                tag: currentProduct.id,
+                                child: Image.network(currentProduct.image!, fit: BoxFit.contain),
+                              ),
+                            )
+                          : const SizedBox(
+                              height: 120,
+                              width: 80,
+                              child: ImagePlacer(image: kimageProduct, boxfit: BoxFit.contain)),
+                      title: currentProduct.name.text.capitalize.size(16).make().px8(),
+                      subtitle: "ITEM CODE: ${currentProduct.itemCode}"
+                          .text
+                          .size(14)
+                          .color(Colors.black54)
+                          .make()
+                          .px8(),
+                      trailing: AddProduct(i: i));
+            },
+          ),
+          Obx(
+            () => Container(
+              decoration: BoxDecoration(border: Border.all(width: .5)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  "Quantity".text.size(14).bold.make(),
+                  5.heightBox,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      "Bags".text.size(14).make(),
+                      "${model.bags.value} Quantity".text.size(14).make(),
+                    ],
+                  ),
+                  5.heightBox,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      "Bars".text.size(14).make(),
+                      "${model.bars.value} Quantity".text.size(14).make(),
+                    ],
+                  ),
+                ],
+              ).p8(),
+            ),
+          ),
+          10.heightBox,
+          Container(
+            decoration: BoxDecoration(border: Border.all(width: .5)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                "Customer details".text.size(14).bold.make(),
+                5.heightBox,
+                TextField(
+                  controller: model.nameTxt,
+                  decoration: textFieldDefault.copyWith(labelText: "Customer Name"),
+                ),
+                5.heightBox,
+                TextField(
+                  controller: model.phoneTxt,
+                  decoration: textFieldDefault.copyWith(labelText: "Contact Number"),
+                ),
+                5.heightBox,
+                Obx(
+                  () => Container(
+                    color: kcolorTextfield,
+                    child: Row(
+                      children: [
+                        "Atoll : ".text.size(16).color(Colors.black54).make(),
+                        DropdownButton<String>(
+                          value: model.selectedAtoll(),
+
+                          icon: const SizedBox(),
+                          // elevation: 16,
+                          // style: const TextStyle(color: Colors.deepPurple),
+                          underline: Container(
+                            height: 0,
+                            color: Colors.transparent,
+                          ),
+                          onChanged: (String? value) {
+                            if (value != null) {
+                              model.selectedAtoll.value = value;
+                            }
+
+                            model.selectedIsland.value = 'Select Island';
+                          },
+                          items: atolls.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ).expand(),
+                      ],
+                    ).px12(),
+                  ),
+                ),
+                5.heightBox,
+                Obx(
+                  () => Container(
+                    color: kcolorTextfield,
+                    child: Row(
+                      children: [
+                        "Island : ".text.size(16).color(Colors.black54).make(),
+                        DropdownButton<String>(
+                          value: model.selectedIsland(),
+
+                          icon: const SizedBox(),
+                          // elevation: 16,
+                          // style: const TextStyle(color: Colors.deepPurple),
+                          underline: Container(
+                            height: 0,
+                            color: Colors.transparent,
+                          ),
+                          onChanged: (String? value) {
+                            if (value != null) {
+                              model.selectedIsland.value = value;
+                            }
+                          },
+                          items: getIslandList(model.selectedAtoll())
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ).expand(),
+                      ],
+                    ).px12(),
+                  ),
+                ),
+                5.heightBox,
+                TextField(
+                  controller: model.addressTxt,
+                  decoration: textFieldDefault.copyWith(labelText: "Address"),
+                ),
+                5.heightBox,
+                TextField(
+                  maxLength: 150,
+                  minLines: 2,
+                  maxLines: 10,
+                  controller: model.noteTxt,
+                  decoration: textFieldDefault.copyWith(labelText: "Note"),
+                ),
+              ],
+            ).p8(),
+          ),
+          10.heightBox,
+          Obx(
+            () => model.authCore.firebaseUser.value != null
+                ? Row(
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                        onPressed: () {
+                          model.checkout();
+                        },
+                        child: 'Checkout'.text.size(16).bold.white.make().p8(),
+                      ).expand(),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                        onPressed: () {
+                          loginAlert(context, model.authCore);
+                        },
+                        child: 'Login'.text.size(16).bold.white.make().p8(),
+                      ).expand(),
+                    ],
+                  ),
+          ),
+          10.heightBox,
         ],
-      ),
-      100.heightBox,
-    ],
-  );
+      ).px12(),
+      context: context);
 }

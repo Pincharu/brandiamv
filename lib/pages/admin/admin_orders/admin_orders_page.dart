@@ -69,13 +69,6 @@ class AdminOrdersPage extends StatelessWidget {
                                         },
                                       ).px12(),
                                       const Divider().px12(),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          "Total".text.size(18).bold.make(),
-                                          order.total.text.size(18).bold.make(),
-                                        ],
-                                      ).px12(),
                                       10.heightBox,
                                     ],
                                   ),

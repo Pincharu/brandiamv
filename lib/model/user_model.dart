@@ -1,17 +1,19 @@
 class UserModel {
   final String id;
   final String name;
-  final String email;
+  final String bussinessName;
   final String phone;
-  final int cart;
+  final String? atoll;
+  final String? island;
   final String? address;
 
   UserModel({
     required this.id,
     required this.name,
-    required this.email,
+    required this.bussinessName,
     required this.phone,
-    required this.cart,
+    this.atoll,
+    this.island,
     this.address,
   });
 
@@ -19,11 +21,11 @@ class UserModel {
     return UserModel(
       id: id,
       name: data['name'],
-      email: data['email'],
+      bussinessName: data['bussinessName'],
       phone: data['phone'],
-      cart: data['cart'],
+      atoll: data['atoll'],
+      island: data['island'],
       address: data['address'],
-
     );
   }
 

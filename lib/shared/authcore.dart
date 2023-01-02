@@ -4,17 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../model/user_model.dart';
+import 'header.dart';
 import 'loading.dart';
 import 'snackbar.dart';
 import '../pages/client/home/home_page.dart';
 
 class AuthCore extends GetxController {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-  TextEditingController referralController = TextEditingController();
+  TextEditingController nameTxt = TextEditingController();
+  TextEditingController bussinessNameTxt = TextEditingController();
+  TextEditingController emailTxt = TextEditingController();
+  TextEditingController passwordTxt = TextEditingController();
+  TextEditingController addressTxt = TextEditingController();
+  TextEditingController referralTxt = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -43,9 +44,9 @@ class AuthCore extends GetxController {
 
   // @override
   // void onClose() {
-  //   nameController.dispose();
-  //   emailController.dispose();
-  //   passwordController.dispose();
+  //   nameTxt.dispose();
+  //   emailTxt.dispose();
+  //   passwordTxt.dispose();
   //   super.onClose();
   // }
 
@@ -69,9 +70,9 @@ class AuthCore extends GetxController {
     showLoadingIndicator();
     try {
       await _auth.signInWithEmailAndPassword(
-          email: emailController.text.trim(), password: passwordController.text.trim());
-      emailController.clear();
-      passwordController.clear();
+          email: emailTxt.text.trim(), password: passwordTxt.text.trim());
+      emailTxt.clear();
+      passwordTxt.clear();
       hideLoadingIndicator();
 
       Get.back();
@@ -93,15 +94,15 @@ class AuthCore extends GetxController {
       errorSnackbar('Sign in Error', 'Error Sigining in');
     }
 
-    emailController.text = '';
-    passwordController.text = '';
+    emailTxt.text = '';
+    passwordTxt.text = '';
   }
 
   Future<bool> verifedRefferal() async {
     bool found = false;
     await FirebaseFirestore.instance
         .collection('users')
-        .where('referral', isEqualTo: referralController.text)
+        .where('referral', isEqualTo: referralTxt.text)
         .get()
         .then((event) {
       if (event.docs.isNotEmpty) {
@@ -124,15 +125,14 @@ class AuthCore extends GetxController {
 
   // User registration using email and password
   registerWithEmailAndPassword() async {
-    if (emailController.text != '' &&
-        passwordController.text != '' &&
-        nameController.text != '' &&
-        phoneController.text != '') {
+    if (emailTxt.text != '' &&
+        passwordTxt.text != '' &&
+        nameTxt.text != '' &&
+        phoneTxt.text != '') {
       showLoadingIndicator();
       try {
         await _auth
-            .createUserWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text)
+            .createUserWithEmailAndPassword(email: emailTxt.text, password: passwordTxt.text)
             .then((result) async {
           await result.user!.sendEmailVerification();
 
@@ -141,19 +141,19 @@ class AuthCore extends GetxController {
           await ref.set({
             'id': result.user!.uid,
             'email': result.user!.email,
-            'name': nameController.text,
-            'password': passwordController.text,
-            'phone': phoneController.text,
+            'name': nameTxt.text,
+            'password': passwordTxt.text,
+            'phone': phoneTxt.text,
             'registerDate': DateTime.now(),
-            'address': addressController.text,
+            'address': addressTxt.text,
             'device': 'web',
             'cart': 0,
           });
 
-          emailController.clear();
-          passwordController.clear();
-          nameController.clear();
-          phoneController.clear();
+          emailTxt.clear();
+          passwordTxt.clear();
+          nameTxt.clear();
+          phoneTxt.clear();
 
           hideLoadingIndicator();
         });
@@ -168,19 +168,115 @@ class AuthCore extends GetxController {
     }
   }
 
-  //check if user is an admin user
-  // isAdmin() async {
-  //   await getUser.then((user) async {
-  //     DocumentSnapshot adminRef =
-  //         await _db.collection('admin').doc(user.uid).get();
-  //     if (adminRef.exists) {
-  //       admin.value = true;
-  //     } else {
-  //       admin.value = false;
-  //     }
-  //     update();
-  //   });
-  // }
+  TextEditingController smsTxt = TextEditingController();
+  TextEditingController phoneTxt = TextEditingController();
+  final RxBool codeSend = false.obs;
+
+  String? cVerificationId;
+
+  Future<void> phoneSignIn({required String phoneNumber}) async {
+    showLoadingIndicator();
+    await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: _onVerificationCompleted,
+        verificationFailed: _onVerificationFailed,
+        codeSent: _onCodeSent,
+        codeAutoRetrievalTimeout: _onCodeTimeout);
+  }
+
+  _onVerificationCompleted(PhoneAuthCredential authCredential) async {
+    // print("verification completed ${authCredential.smsCode}");
+    User? user = FirebaseAuth.instance.currentUser;
+    smsTxt.text = authCredential.smsCode!;
+
+    if (authCredential.smsCode != null) {
+      try {
+        await user!.linkWithCredential(authCredential);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'provider-already-linked') {
+          await _auth.signInWithCredential(authCredential);
+        }
+      }
+      Get.offAll(() => const HomePage());
+    }
+  }
+
+  _onVerificationFailed(FirebaseAuthException exception) {
+    if (exception.code == 'invalid-phone-number') {
+      hideLoadingIndicator();
+      errorSnackbar('Invalid Phone number', 'The provided phone number is not valid');
+    } else {
+      hideLoadingIndicator();
+      errorSnackbar("Error sigining in", exception.code);
+    }
+  }
+
+  _onCodeSent(String verificationId, int? forceResendingToken) {
+    cVerificationId = verificationId;
+    codeSend.value = true;
+    hideLoadingIndicator();
+  }
+
+  _onCodeTimeout(String timeout) {
+    return null;
+  }
+
+  verifyCode() async {
+    showLoadingIndicator();
+    if (smsTxt.text != '' && cVerificationId != null) {
+      PhoneAuthCredential credential =
+          PhoneAuthProvider.credential(verificationId: cVerificationId!, smsCode: smsTxt.text);
+
+      await _auth.signInWithCredential(credential);
+
+      final path = 'users/${_auth.currentUser!.uid}';
+      DocumentReference userRef = FirebaseFirestore.instance.doc(path);
+
+      FirebaseFirestore.instance.runTransaction((transaction) async {
+        DocumentSnapshot snapshot = await transaction.get(userRef);
+
+        if (!snapshot.exists) {
+          transaction.set(userRef, {
+            'name': nameTxt.text,
+            'bussinessName': bussinessNameTxt.text,
+            'phone': '+960${phoneTxt.text}',
+            'registerDate': DateTime.now(),
+          });
+        }
+      }).then((value) {
+        hideLoadingIndicator();
+        Get.back();
+      });
+    }
+  }
+
+  Future checkifRegistered(context, authCore) async {
+    showLoadingIndicator();
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .where('phone', isEqualTo: "+960${phoneTxt.text}")
+        .get()
+        .then((QuerySnapshot query) async {
+      if (query.docs.isNotEmpty) {
+        if (phoneTxt.text != '') {
+          if (codeSend.value == false) {
+            await phoneSignIn(phoneNumber: '+960${phoneTxt.text}');
+          } else {
+            verifyCode();
+          }
+        } else {
+          errorSnackbar('Empty Number', "Please enter a number");
+        }
+      } else {
+        Get.back();
+        registerAlert(context, authCore);
+      }
+    });
+
+    hideLoadingIndicator();
+    return false;
+  }
 
   // Sign out
   Future<void> signOut() {
