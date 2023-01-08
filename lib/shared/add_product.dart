@@ -24,23 +24,6 @@ class AddProduct extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: () {
-                        model.currentList[i].quantity = model.currentList[i].quantity! + 1;
-                        if (model.currentList[i].category == "BAGS") {
-                          model.bags++;
-                        } else if (model.currentList[i].category == "DEFORM BARS") {
-                          model.bars++;
-                        }
-                        model.resetProducts();
-                      },
-                      icon: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    ),
-                    "${model.currentList[i].quantity}".text.size(16).white.make(),
-                    IconButton(
-                      onPressed: () {
                         if (model.currentList[i].quantity! > 0) {
                           model.currentList[i].quantity = model.currentList[i].quantity! - 1;
                           if (model.currentList[i].category == "BAGS") {
@@ -53,6 +36,23 @@ class AddProduct extends StatelessWidget {
                       },
                       icon: const Icon(
                         Icons.remove,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                    ),
+                    "${model.currentList[i].quantity}".text.size(16).white.make(),
+                    IconButton(
+                      onPressed: () {
+                        model.currentList[i].quantity = model.currentList[i].quantity! + 1;
+                        if (model.currentList[i].category == "BAGS") {
+                          model.bags++;
+                        } else if (model.currentList[i].category == "DEFORM BARS") {
+                          model.bars++;
+                        }
+                        model.resetProducts();
+                      },
+                      icon: const Icon(
+                        Icons.add,
                         color: Colors.white,
                         size: 16,
                       ),

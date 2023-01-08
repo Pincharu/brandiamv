@@ -1,3 +1,4 @@
+import 'package:brandiamv/app/app_routing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_table/easy_table.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +19,8 @@ class HomeCore extends GetxController {
   var selectedAtoll = 'Select Atoll'.obs;
   var selectedIsland = 'Select Island'.obs;
 
+  RxBool refreshPage = true.obs;
+
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   var productList = RxList<ProductModel>([]);
   var currentList = RxList<ProductModel>([]);
@@ -25,7 +28,6 @@ class HomeCore extends GetxController {
   EasyTableModel<ProductModel>? cartListTable;
   TextEditingController nameTxt = TextEditingController();
   TextEditingController phoneTxt = TextEditingController();
-  TextEditingController addressTxt = TextEditingController();
   TextEditingController noteTxt = TextEditingController();
 
   var bags = 0.obs;
@@ -52,7 +54,6 @@ class HomeCore extends GetxController {
       phoneTxt.text = authCore.firestoreUser.value!.phone;
       selectedAtoll.value = authCore.firestoreUser.value!.atoll ?? 'Select Atoll';
       selectedIsland.value = authCore.firestoreUser.value!.island ?? 'Select Island';
-      addressTxt.text = authCore.firestoreUser.value!.address ?? '';
     }
   }
 
@@ -119,6 +120,24 @@ class HomeCore extends GetxController {
     }
   }
 
+  bool checkFields() {
+    if (nameTxt.text == '') {
+      errorSnackbar('Empty Feilds', 'Fill Customer Name');
+      return false;
+    } else if (phoneTxt.text == '') {
+      errorSnackbar('Empty Feilds', 'Fill Contact Number');
+      return false;
+    } else if (selectedAtoll.value == 'Select Atoll') {
+      errorSnackbar('Empty Feilds', 'Select an Atoll');
+      return false;
+    } else if (selectedIsland.value == 'Select Island') {
+      errorSnackbar('Empty Feilds', 'Select an Island');
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   Future checkout() async {
     String dateTime = DateTime.now().microsecondsSinceEpoch.toString();
     List<Map> productsList = [];
@@ -136,6 +155,7 @@ class HomeCore extends GetxController {
     }
 
     showLoadingIndicator();
+
     final path = 'orders/$dateTime';
     final ref = FirebaseFirestore.instance.doc(path);
     await ref.set({
@@ -144,21 +164,13 @@ class HomeCore extends GetxController {
       'atoll': selectedAtoll.value,
       'island': selectedIsland.value,
       'note': noteTxt.text,
-      'address': addressTxt.text,
       'products': productsList,
-      'user': authCore.getUser,
       'orderTime': DateTime.now(),
       'read': false,
       'bars': bars.value,
       'bags': bags.value,
-    });
-
-    final userpath = 'users/${authCore.getUser}';
-    final userref = FirebaseFirestore.instance.doc(userpath);
-    await userref.update({
-      'address': addressTxt.text,
-      'atoll': selectedAtoll.value,
-      'island': selectedIsland.value,
+    }).catchError((e) {
+      Get.log(e);
     });
 
     for (int i = 0; i < currentList.length; i++) {
@@ -170,7 +182,7 @@ class HomeCore extends GetxController {
 
     hideLoadingIndicator();
 
-    Get.back();
+    Get.offAllNamed(Routes.main);
     sucessSnackbar("Ordered Successfully", "Order Received");
   }
 }

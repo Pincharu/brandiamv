@@ -4,7 +4,6 @@ class OrdersModel {
   final String id;
   final String address;
   final List<dynamic> products;
-  final String user;
   final Timestamp orderTime;
   final bool read;
   final String phone;
@@ -16,7 +15,6 @@ class OrdersModel {
     required this.id,
     required this.address,
     required this.products,
-    required this.user,
     required this.orderTime,
     required this.read,
     required this.phone,
@@ -30,7 +28,6 @@ class OrdersModel {
       id: id,
       address: data['address'],
       products: data['products'],
-      user: data['user'],
       orderTime: data['orderTime'],
       read: data['read'],
       phone: data['phone'],

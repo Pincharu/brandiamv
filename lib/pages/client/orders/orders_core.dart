@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../../model/orders_model.dart';
-import '../../../shared/authcore.dart';
-import '../../../shared/loading.dart';
-import '../../../shared/pdf_report.dart';
 
 class OrdersCore extends GetxController {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
