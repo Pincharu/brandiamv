@@ -102,7 +102,7 @@ PdfLayoutResult drawHeader(PdfPage page, Size pageSize, PdfGrid grid, OrdersMode
       'Invoice Number: ${order.id}\r\n\r\nDate: ${format.format(DateTime.now())}';
   final Size contentSize = contentFont.measureString(invoiceNumber);
   String address =
-      'Bill To: \r\n\r\n ${order.name}, \r\n\r\n${order.atoll}, ${order.island}, \r\n\r\n${order.address}, \r\n\r\n${order.phone}';
+      'Bill To: \r\n\r\n ${order.name}, \r\n\r\n${order.atoll}, ${order.island}, \r\n\r\n${order.phone}';
   PdfTextElement(text: invoiceNumber, font: contentFont).draw(
       page: page,
       bounds: Rect.fromLTWH(pageSize.width - (contentSize.width + 30), 120, contentSize.width + 30,

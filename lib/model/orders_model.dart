@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrdersModel {
   final String id;
-  final String address;
   final List<dynamic> products;
   final Timestamp orderTime;
   final bool read;
@@ -13,7 +12,6 @@ class OrdersModel {
 
   OrdersModel({
     required this.id,
-    required this.address,
     required this.products,
     required this.orderTime,
     required this.read,
@@ -26,7 +24,6 @@ class OrdersModel {
   factory OrdersModel.fromMap(Map data, String id) {
     return OrdersModel(
       id: id,
-      address: data['address'],
       products: data['products'],
       orderTime: data['orderTime'],
       read: data['read'],

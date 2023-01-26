@@ -247,32 +247,29 @@ registerAlert(BuildContext context, AuthCore authCore) {
     builder: (context) {
       return AlertDialog(
         title: const Text("Register", style: TextStyle(fontWeight: FontWeight.bold)),
-        content: Obx(
-          () => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: authCore.nameTxt,
-                decoration: textFieldDefault.copyWith(labelText: "Name"),
-              ),
-              5.heightBox,
-              TextField(
-                controller: authCore.bussinessNameTxt,
-                decoration: textFieldDefault.copyWith(labelText: "Business name (Optional)"),
-              ),
-              5.heightBox,
-              TextField(
-                controller: authCore.phoneTxt,
-                decoration: textFieldDefault.copyWith(labelText: "Phone"),
-              ),
-              if (authCore.codeSend.value) 5.heightBox,
-              if (authCore.codeSend.value)
-                TextField(
-                  controller: authCore.smsTxt,
-                  decoration: textFieldDefault.copyWith(labelText: "SMS Code"),
-                ),
-            ],
-          ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: authCore.nameTxt,
+              decoration: textFieldDefault.copyWith(labelText: "Name"),
+            ),
+            5.heightBox,
+            TextField(
+              controller: authCore.bussinessNameTxt,
+              decoration: textFieldDefault.copyWith(labelText: "Business name (Optional)"),
+            ),
+            5.heightBox,
+            TextField(
+              controller: authCore.phoneTxt,
+              decoration: textFieldDefault.copyWith(labelText: "Phone"),
+            ),
+            5.heightBox,
+            TextField(
+              controller: authCore.passwordTxt,
+              decoration: textFieldDefault.copyWith(labelText: "Password"),
+            ),
+          ],
         ),
         actions: [
           Row(
@@ -281,20 +278,14 @@ registerAlert(BuildContext context, AuthCore authCore) {
                 style: TextButton.styleFrom(backgroundColor: kcolorOrange),
                 onPressed: () async {
                   if (authCore.phoneTxt.text != '') {
-                    if (authCore.codeSend.value == false) {
-                      await authCore.phoneSignIn(phoneNumber: '+960${authCore.phoneTxt.text}');
-                    } else {
-                      authCore.verifyCode();
-                    }
+                    authCore.registerWithEmailAndPassword();
                   } else {
                     errorSnackbar('Empty Number', "Please enter a number");
                   }
                 },
-                child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: (authCore.codeSend.value)
-                        ? const Text("Verify Code", style: TextStyle(color: Colors.white))
-                        : const Text("Verify Mobile", style: TextStyle(color: Colors.white))),
+                child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Register", style: TextStyle(color: Colors.white))),
               ),
               TextButton(
                 onPressed: () => Get.back(),
@@ -317,35 +308,28 @@ loginAlert(BuildContext context, AuthCore authCore) {
     builder: (context) {
       return AlertDialog(
         title: const Text("Login", style: TextStyle(fontWeight: FontWeight.bold)),
-        content: Obx(
-          () => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: authCore.phoneTxt,
-                decoration: textFieldDefault.copyWith(labelText: "Phone"),
-              ),
-              if (authCore.codeSend.value) 5.heightBox,
-              if (authCore.codeSend.value)
-                TextField(
-                  controller: authCore.smsTxt,
-                  decoration: textFieldDefault.copyWith(labelText: "SMS Code"),
-                ),
-            ],
-          ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: authCore.emailTxt,
+              decoration: textFieldDefault.copyWith(labelText: "Phone"),
+            ),
+            TextField(
+              controller: authCore.passwordTxt,
+              decoration: textFieldDefault.copyWith(labelText: "Password"),
+            ),
+          ],
         ),
         actions: [
           Row(
             children: [
               TextButton(
-                style: TextButton.styleFrom(backgroundColor: kcolorOrange),
-                onPressed: () async => await authCore.checkifRegistered(context, authCore),
-                child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: (authCore.codeSend.value)
-                        ? const Text("Verify Code", style: TextStyle(color: Colors.white))
-                        : const Text("Verify Mobile", style: TextStyle(color: Colors.white))),
-              ),
+                  style: TextButton.styleFrom(backgroundColor: kcolorOrange),
+                  onPressed: () async {
+                    await authCore.checkifRegistered(context, authCore);
+                  },
+                  child: const Text("Login", style: TextStyle(color: Colors.white))),
               TextButton(
                 onPressed: () {
                   Get.back();
@@ -364,16 +348,19 @@ loginAlert(BuildContext context, AuthCore authCore) {
   );
 }
 
-Future userLogged(authCore) async {
+Future userLogged(AuthCore authCore) async {
   final FirebaseAuth auth = FirebaseAuth.instance;
   await Future.delayed(const Duration(milliseconds: 300), () async {
     if (auth.currentUser != null) {
+      //Get.offAllNamed(Routes.main);
       authCore.onReady();
     }
   });
 
   await Future.delayed(const Duration(seconds: 2), () async {
     if (auth.currentUser != null) {
+      //Get.offAllNamed(Routes.main);
+
       authCore.onReady();
     }
   });

@@ -70,7 +70,7 @@ class AuthCore extends GetxController {
     showLoadingIndicator();
     try {
       await _auth.signInWithEmailAndPassword(
-          email: emailTxt.text.trim(), password: passwordTxt.text.trim());
+          email: "${emailTxt.text.trim()}@brandiamv.com", password: passwordTxt.text.trim());
       emailTxt.clear();
       passwordTxt.clear();
       hideLoadingIndicator();
@@ -125,29 +125,24 @@ class AuthCore extends GetxController {
 
   // User registration using email and password
   registerWithEmailAndPassword() async {
-    if (emailTxt.text != '' &&
-        passwordTxt.text != '' &&
-        nameTxt.text != '' &&
-        phoneTxt.text != '') {
+    if (passwordTxt.text != '' && nameTxt.text != '' && phoneTxt.text != '') {
       showLoadingIndicator();
       try {
         await _auth
-            .createUserWithEmailAndPassword(email: emailTxt.text, password: passwordTxt.text)
+            .createUserWithEmailAndPassword(
+                email: "${phoneTxt.text.trim()}@brandiamv.com", password: passwordTxt.text)
             .then((result) async {
-          await result.user!.sendEmailVerification();
-
           final path = 'users/${result.user!.uid}';
           final ref = FirebaseFirestore.instance.doc(path);
           await ref.set({
             'id': result.user!.uid,
-            'email': result.user!.email,
+            'email': "${phoneTxt.text.trim()}@brandiamv.com",
             'name': nameTxt.text,
+            'bussinessName': bussinessNameTxt.text,
             'password': passwordTxt.text,
             'phone': phoneTxt.text,
             'registerDate': DateTime.now(),
-            'address': addressTxt.text,
             'device': 'web',
-            'cart': 0,
           });
 
           emailTxt.clear();
@@ -255,16 +250,12 @@ class AuthCore extends GetxController {
 
     FirebaseFirestore.instance
         .collection('users')
-        .where('phone', isEqualTo: "+960${phoneTxt.text}")
+        .where('phone', isEqualTo: emailTxt.text)
         .get()
         .then((QuerySnapshot query) async {
       if (query.docs.isNotEmpty) {
-        if (phoneTxt.text != '') {
-          if (codeSend.value == false) {
-            await phoneSignIn(phoneNumber: '+960${phoneTxt.text}');
-          } else {
-            verifyCode();
-          }
+        if (emailTxt.text != '') {
+          authCore.signInWithEmailAndPassword();
         } else {
           errorSnackbar('Empty Number', "Please enter a number");
         }
@@ -283,3 +274,6 @@ class AuthCore extends GetxController {
     return _auth.signOut();
   }
 }
+
+
+//brandiamv@2023

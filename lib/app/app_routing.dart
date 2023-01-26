@@ -1,7 +1,6 @@
+import 'package:brandiamv/pages/admin/admin_page.dart';
 import 'package:get/get.dart';
 
-import '../pages/admin/admin_orders/admin_orders_page.dart';
-import '../pages/admin/admin_product/admin_product_page.dart';
 import '../pages/client/home/home_page.dart';
 import '../pages/client/orders/orders_page.dart';
 
@@ -19,14 +18,9 @@ class AppRoutes {
       page: () => const OrdersPage(),
     ),
     GetPage(
-      name: Routes.adminProduct,
+      name: Routes.admin,
       transition: Transition.downToUp,
-      page: () => const AdminProductPage(),
-    ),
-    GetPage(
-      name: Routes.adminOrders,
-      transition: Transition.downToUp,
-      page: () => const AdminOrdersPage(),
+      page: () => const AdminPage(),
     ),
   ];
 }
@@ -36,6 +30,5 @@ class Routes {
 
   static const String main = '/';
   static const String orders = '/orders';
-  static const String adminProduct = '/adminProduct';
-  static const String adminOrders = '/adminOrders';
+  static const String admin = '/admin';
 }

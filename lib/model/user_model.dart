@@ -1,20 +1,22 @@
 class UserModel {
   final String id;
   final String name;
-  final String bussinessName;
+  final String? bussinessName;
   final String phone;
   final String? atoll;
   final String? island;
   final String? address;
+  final bool? isAdmin;
 
   UserModel({
     required this.id,
     required this.name,
-    required this.bussinessName,
+    this.bussinessName,
     required this.phone,
     this.atoll,
     this.island,
     this.address,
+    this.isAdmin,
   });
 
   factory UserModel.fromMap(Map data, String id) {
@@ -26,6 +28,7 @@ class UserModel {
       atoll: data['atoll'],
       island: data['island'],
       address: data['address'],
+      isAdmin: data['isAdmin'],
     );
   }
 
