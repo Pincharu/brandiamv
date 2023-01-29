@@ -1,6 +1,6 @@
-import 'package:brandiamv/model/category_model.dart';
-import 'package:brandiamv/shared/loading.dart';
-import 'package:brandiamv/shared/snackbar.dart';
+import '../../../model/category_model.dart';
+import '../../../shared/loading.dart';
+import '../../../shared/snackbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';

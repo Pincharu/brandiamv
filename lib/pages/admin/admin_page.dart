@@ -1,7 +1,5 @@
-import 'package:brandiamv/shared/header.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 import '../../app/app_routing.dart';
 import '../../shared/authcore.dart';

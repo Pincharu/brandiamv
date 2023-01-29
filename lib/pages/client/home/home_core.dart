@@ -1,4 +1,4 @@
-import 'package:brandiamv/app/app_routing.dart';
+import '../../../app/app_routing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';

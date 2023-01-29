@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:brandiamv/model/orders_model.dart';
-import 'package:brandiamv/shared/snackbar.dart';
+import '../model/orders_model.dart';
+import 'snackbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';

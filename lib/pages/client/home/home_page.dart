@@ -1,4 +1,4 @@
-import 'package:brandiamv/pages/admin/admin_page.dart';
+import '../../admin/admin_page.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

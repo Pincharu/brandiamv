@@ -1,4 +1,4 @@
-import 'package:brandiamv/pages/client/home/home_core.dart';
+import '../pages/client/home/home_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';

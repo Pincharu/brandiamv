@@ -1,4 +1,4 @@
-import 'package:brandiamv/shared/snackbar.dart';
+import 'snackbar.dart';
 
 import 'textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';

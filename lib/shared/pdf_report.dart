@@ -1,4 +1,4 @@
-import 'package:brandiamv/model/orders_model.dart';
+import '../model/orders_model.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'pdf_api.dart';

@@ -1,4 +1,4 @@
-import 'package:brandiamv/pages/admin/admin_page.dart';
+import '../pages/admin/admin_page.dart';
 import 'package:get/get.dart';
 
 import '../pages/client/home/home_page.dart';
