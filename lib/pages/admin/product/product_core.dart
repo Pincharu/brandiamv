@@ -32,6 +32,7 @@ class AdminCore extends GetxController {
   TextEditingController categoryTxt = TextEditingController();
   TextEditingController priceTxt = TextEditingController();
   TextEditingController stockTxt = TextEditingController();
+  TextEditingController itemCodeTxt = TextEditingController();
 
   resetTxt() {
     nameTxt.text = '';
@@ -39,6 +40,7 @@ class AdminCore extends GetxController {
     categoryTxt.text = '';
     priceTxt.text = '';
     stockTxt.text = '';
+    itemCodeTxt.text = '';
   }
 
   setProductTxt(ProductModel product) {
@@ -47,14 +49,11 @@ class AdminCore extends GetxController {
     categoryTxt.text = product.category ?? '';
     priceTxt.text = product.price.toString();
     stockTxt.text = product.stock.toString();
+    stockTxt.text = product.itemCode ?? '';
   }
 
   Future createProduct() async {
-    if (nameTxt.text != '' &&
-        descTxt.text != '' &&
-        categoryTxt.text != '' &&
-        priceTxt.text != '' &&
-        stockTxt.text != '') {
+    if (nameTxt.text != '' && descTxt.text != '') {
       showLoadingIndicator();
       var dateTime = DateTime.now();
       final path = 'product/${dateTime.millisecondsSinceEpoch}';
@@ -63,6 +62,7 @@ class AdminCore extends GetxController {
         'name': nameTxt.text,
         'nameDesc': descTxt.text,
         'category': categoryTxt.text,
+        'itemCode': itemCodeTxt.text,
         'price': 0,
         'stock': 0,
       });
@@ -83,6 +83,7 @@ class AdminCore extends GetxController {
       'name': nameTxt.text,
       'nameDesc': descTxt.text,
       'category': categoryTxt.text,
+      'itemCode': itemCodeTxt.text,
       'price': 0,
       'stock': 0,
     });

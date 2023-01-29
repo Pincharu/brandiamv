@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../../shared/authcore.dart';
@@ -41,7 +42,9 @@ class OrdersPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             "# ${order.id}".text.size(16).make(),
-                            "Order Received".text.size(18).bold.make(),
+                            order.read
+                                ? "Order Approved".text.size(18).bold.make()
+                                : "Order Received".text.size(18).bold.make(),
                           ],
                         ).py12(),
                         children: [
@@ -51,25 +54,44 @@ class OrdersPage extends StatelessWidget {
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: order.products.length,
                             itemBuilder: (BuildContext ctx, int z) {
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   "Name: ${order.products[z]['name']}"
                                       .toString()
                                       .text
                                       .size(14)
                                       .make(),
-                                  "Quantity: ${order.products[z]['quantity']}"
-                                      .toString()
-                                      .text
-                                      .size(14)
-                                      .make(),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      "Quantity: ${order.products[z]['quantity']} "
+                                          .toString()
+                                          .text
+                                          .size(14)
+                                          .make(),
+                                      if (order.products[z]['price'] != 0)
+                                        "-- Price: ${order.products[z]['price']}"
+                                            .toString()
+                                            .text
+                                            .size(14)
+                                            .make(),
+                                    ],
+                                  ),
+                                  const Divider()
                                 ],
                               );
                             },
                           ).px12(),
                           const Divider().px12(),
-                          10.heightBox,
+                          if (order.pdf != null)
+                            ElevatedButton(
+                                    onPressed: () {
+                                      launchUrlString(order.pdf!);
+                                    },
+                                    child: "Download receipt".text.size(18).bold.make().p4())
+                                .px12(),
+                          10.heightBox
                         ],
                       ),
                     ).white.roundedSM.make().pOnly(bottom: 12);

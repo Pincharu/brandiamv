@@ -1,3 +1,4 @@
+import 'package:brandiamv/pages/admin/admin_page.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,14 +16,32 @@ import '../../../shared/authcore.dart';
 import '../../../shared/textfield.dart';
 import 'home_core.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  Widget build(BuildContext context) {
+    var authCore = Get.find<AuthCore>();
+
+    return Obx(() => authCore.firebaseUser.value == null
+        ? const HomeDetailsPage()
+        : authCore.firestoreUser.value == null
+            ? const HomeDetailsPage()
+            : (authCore.firestoreUser.value!.isAdmin == null ||
+                    authCore.firestoreUser.value!.isAdmin == false)
+                ? const HomeDetailsPage()
+                : const AdminPage());
+  }
 }
 
-class _HomePageState extends State<HomePage> {
+class HomeDetailsPage extends StatefulWidget {
+  const HomeDetailsPage({Key? key}) : super(key: key);
+
+  @override
+  State<HomeDetailsPage> createState() => _HomeDetailsPageState();
+}
+
+class _HomeDetailsPageState extends State<HomeDetailsPage> {
   ScrollController scrollController = ScrollController();
   var model = Get.put<HomeCore>(HomeCore());
   var authCore = Get.find<AuthCore>();
@@ -174,12 +193,14 @@ Widget list(BuildContext context, ScrollController scrollController, HomeCore mo
                             width: 80,
                             child: ImagePlacer(image: kimageProduct, boxfit: BoxFit.contain)),
                     title: currentProduct.name.text.capitalize.size(16).make().px8(),
-                    subtitle: "ITEM CODE: ${currentProduct.itemCode}"
-                        .text
-                        .size(14)
-                        .color(Colors.black54)
-                        .make()
-                        .px8(),
+                    subtitle: (currentProduct.itemCode != null)
+                        ? "ITEM CODE: ${currentProduct.itemCode}"
+                            .text
+                            .size(14)
+                            .color(Colors.black54)
+                            .make()
+                            .px8()
+                        : const SizedBox(),
                     trailing: AddProduct(i: i))
                 .pOnly(bottom: 4);
           })
@@ -637,7 +658,6 @@ Widget sideCart(BuildContext context, HomeCore model) {
   ).px12();
 }
 
-
 // floatingActionButton: context.screenWidth > 850
 //     ? Obx(
 //         () => model.bags.value != 0 || model.bars.value != 0
@@ -674,3 +694,82 @@ Widget sideCart(BuildContext context, HomeCore model) {
 //             : const SizedBox(),
 //       )
 //     : const SizedBox(),
+
+class Category {
+  final String title;
+  bool isSelected;
+  Category(this.title, this.isSelected);
+}
+
+List<Category> categoryList = [
+  Category("Trending", true),
+  Category("Digital Arts", false),
+  Category("3D Videos", false),
+  Category("Game", false),
+  Category("Console", false),
+];
+
+class HorizontalCategoriesView extends StatefulWidget {
+  const HorizontalCategoriesView({Key? key}) : super(key: key);
+
+  @override
+  State<HorizontalCategoriesView> createState() => _HorizontalCategoriesViewState();
+}
+
+class _HorizontalCategoriesViewState extends State<HorizontalCategoriesView> {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 45,
+      width: MediaQuery.of(context).size.width,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: categoryList.length,
+        itemBuilder: (context, index) {
+          return CategoryCard(
+            category: categoryList[index],
+            onPressed: (b) {
+              for (var category in categoryList) {
+                category.isSelected = false;
+              }
+              setState(() {
+                categoryList[index].isSelected = true;
+              });
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class CategoryCard extends StatefulWidget {
+  final Category category;
+  final Function(bool) onPressed;
+
+  const CategoryCard({required this.category, required this.onPressed, Key? key}) : super(key: key);
+
+  @override
+  State<CategoryCard> createState() => _CategoryCardState();
+}
+
+class _CategoryCardState extends State<CategoryCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.0),
+          color: widget.category.isSelected ? Colors.white : Colors.transparent),
+      child: TextButton(
+          style: ButtonStyle(
+            overlayColor: MaterialStateProperty.all(Colors.transparent),
+          ),
+          onPressed: () {
+            widget.onPressed(true);
+          },
+          child: Text(widget.category.title,
+              style: TextStyle(color: widget.category.isSelected ? Colors.black : Colors.grey))),
+    );
+  }
+}

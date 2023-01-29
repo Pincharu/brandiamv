@@ -7,7 +7,7 @@ class ProductModel {
   final double price;
   final int stock;
   int? quantity;
-  final String itemCode;
+  final String? itemCode;
   final String? description;
 
   ProductModel({
@@ -19,7 +19,7 @@ class ProductModel {
     required this.price,
     required this.stock,
     this.quantity,
-    required this.itemCode,
+    this.itemCode,
     this.description,
   });
 

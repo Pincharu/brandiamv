@@ -31,12 +31,19 @@ class AdminProductPage extends StatelessWidget {
                           children: [
                             20.heightBox,
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                "Product Edit".text.size(20).bold.make(),
                                 IconButton(
-                                    onPressed: () => model.deleteProduct(product.id),
-                                    icon: const Icon(Icons.delete)),
+                                    onPressed: () => Get.back(),
+                                    icon: const Icon(Icons.arrow_back)),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    "Product Edit".text.size(20).bold.make(),
+                                    IconButton(
+                                        onPressed: () => model.deleteProduct(product.id),
+                                        icon: const Icon(Icons.delete)),
+                                  ],
+                                ),
                               ],
                             ),
                             20.heightBox,
@@ -48,6 +55,16 @@ class AdminProductPage extends StatelessWidget {
                             TextField(
                               decoration: textFieldDefault.copyWith(labelText: 'Description'),
                               controller: model.descTxt,
+                            ),
+                            5.heightBox,
+                            TextField(
+                              decoration: textFieldDefault.copyWith(labelText: 'Category'),
+                              controller: model.categoryTxt,
+                            ),
+                            5.heightBox,
+                            TextField(
+                              decoration: textFieldDefault.copyWith(labelText: 'Item Code'),
+                              controller: model.itemCodeTxt,
                             ),
                             20.heightBox,
                             Row(
@@ -74,7 +91,12 @@ class AdminProductPage extends StatelessWidget {
               body: ListView(
                 children: [
                   20.heightBox,
-                  "Create Product".text.size(20).bold.make(),
+                  Row(
+                    children: [
+                      IconButton(onPressed: () => Get.back(), icon: const Icon(Icons.arrow_back)),
+                      "Create Product".text.size(20).bold.make(),
+                    ],
+                  ),
                   20.heightBox,
                   TextField(
                     decoration: textFieldDefault.copyWith(labelText: 'Name'),
@@ -82,10 +104,20 @@ class AdminProductPage extends StatelessWidget {
                   ),
                   5.heightBox,
                   TextField(
-                    decoration: textFieldDefault.copyWith(labelText: 'Description'),
+                    decoration:
+                        textFieldDefault.copyWith(labelText: 'Description', hintText: 'Per Bag'),
                     controller: model.descTxt,
                   ),
                   5.heightBox,
+                  TextField(
+                    decoration: textFieldDefault.copyWith(labelText: 'Category', hintText: 'BAGS'),
+                    controller: model.categoryTxt,
+                  ),
+                  5.heightBox,
+                  TextField(
+                    decoration: textFieldDefault.copyWith(labelText: 'Item Code'),
+                    controller: model.itemCodeTxt,
+                  ),
                   20.heightBox,
                   Row(
                     children: [

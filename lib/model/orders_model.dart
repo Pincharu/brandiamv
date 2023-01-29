@@ -9,6 +9,7 @@ class OrdersModel {
   final String atoll;
   final String island;
   final String name;
+  final String? pdf;
 
   OrdersModel({
     required this.id,
@@ -19,6 +20,7 @@ class OrdersModel {
     required this.name,
     required this.atoll,
     required this.island,
+    this.pdf,
   });
 
   factory OrdersModel.fromMap(Map data, String id) {
@@ -31,6 +33,7 @@ class OrdersModel {
       name: data['name'],
       atoll: data['atoll'],
       island: data['island'],
+      pdf: data['pdf'],
     );
   }
 

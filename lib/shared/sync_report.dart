@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -11,8 +12,6 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
-
-import 'package:url_launcher/url_launcher.dart';
 
 Future<void> generatePDF(OrdersModel order) async {
   String? url;
@@ -63,10 +62,11 @@ Future<void> generatePDF(OrdersModel order) async {
 
   await Clipboard.setData(ClipboardData(text: url));
 
-  final Uri whatsappURL = Uri.parse('https://wa.me/${order.phone}');
-  if (!await launchUrl(whatsappURL)) {
-    throw 'Could not launch $whatsappURL';
-  }
+  // final Uri whatsappURL = Uri.parse('https://wa.me/${order.phone}');
+  // if (!await launchUrl(whatsappURL)) {
+  //   throw 'Could not launch $whatsappURL';
+  // }
+  Share.share(url!);
 }
 
 //Draws the invoice header

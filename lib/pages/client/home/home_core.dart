@@ -1,6 +1,5 @@
 import 'package:brandiamv/app/app_routing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_table/easy_table.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -25,7 +24,6 @@ class HomeCore extends GetxController {
   var productList = RxList<ProductModel>([]);
   var currentList = RxList<ProductModel>([]);
   var categoryList = RxList<CategoryModel>([]);
-  EasyTableModel<ProductModel>? cartListTable;
   TextEditingController nameTxt = TextEditingController();
   TextEditingController phoneTxt = TextEditingController();
   TextEditingController noteTxt = TextEditingController();

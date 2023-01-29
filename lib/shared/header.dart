@@ -52,7 +52,7 @@ Widget loggedHeader(BuildContext context) {
                         throw 'Could not launch $url';
                       }
                     },
-                    child: const Icon(Icons.whatsapp, size: 14).p8()),
+                    child: const Icon(Icons.wechat_sharp, size: 14).p8()),
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
                     onPressed: () {
@@ -107,7 +107,7 @@ Widget loggedHeader(BuildContext context) {
                     },
                     child: Row(
                       children: [
-                        const Icon(Icons.whatsapp, size: 14),
+                        const Icon(Icons.whatshot, size: 14),
                         5.widthBox,
                         "Whatsapp".text.white.size(14).make(),
                       ],
@@ -182,7 +182,7 @@ Widget loggedOutHeader(BuildContext context) {
                         throw 'Could not launch $url';
                       }
                     },
-                    child: const Icon(Icons.whatsapp, size: 14).p8()),
+                    child: const Icon(Icons.whatshot, size: 14).p8()),
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
                     onPressed: () {
@@ -224,7 +224,7 @@ Widget loggedOutHeader(BuildContext context) {
                     },
                     child: Row(
                       children: [
-                        const Icon(Icons.whatsapp, size: 14),
+                        const Icon(Icons.whatshot, size: 14),
                         5.widthBox,
                         "Whatsapp".text.bold.white.size(14).make(),
                       ],

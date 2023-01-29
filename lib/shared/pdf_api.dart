@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:open_file/open_file.dart';
 import 'package:pdf/widgets.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PdfApi {
   static Future saveDocument({
@@ -40,10 +40,12 @@ class PdfApi {
 
     await Clipboard.setData(ClipboardData(text: url));
 
-    final Uri whatsappURL = Uri.parse('https://wa.me/${order.phone}');
-    if (!await launchUrl(whatsappURL)) {
-      throw 'Could not launch $whatsappURL';
-    }
+    // final Uri whatsappURL = Uri.parse('https://wa.me/${order.phone}');
+    // if (!await launchUrl(whatsappURL)) {
+    //   throw 'Could not launch $whatsappURL';
+    // }
+
+    Share.share(url!);
   }
 
   static Future openFile(File file) async {

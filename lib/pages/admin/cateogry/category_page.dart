@@ -30,12 +30,19 @@ class AdminCategoryPage extends StatelessWidget {
                           children: [
                             20.heightBox,
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                "Catgory Edit".text.size(20).bold.make(),
                                 IconButton(
-                                    onPressed: () => model.deleteCategory(category.id),
-                                    icon: const Icon(Icons.delete)),
+                                    onPressed: () => Get.back(),
+                                    icon: const Icon(Icons.arrow_back)),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    "Catgory Edit".text.size(20).bold.make(),
+                                    IconButton(
+                                        onPressed: () => model.deleteCategory(category.id),
+                                        icon: const Icon(Icons.delete)),
+                                  ],
+                                ),
                               ],
                             ),
                             20.heightBox,
@@ -68,7 +75,12 @@ class AdminCategoryPage extends StatelessWidget {
               body: ListView(
                 children: [
                   20.heightBox,
-                  "Catgory Edit".text.size(20).bold.make(),
+                  Row(
+                    children: [
+                      IconButton(onPressed: () => Get.back(), icon: const Icon(Icons.arrow_back)),
+                      "Catgory Edit".text.size(20).bold.make(),
+                    ],
+                  ),
                   20.heightBox,
                   TextField(
                     decoration: textFieldDefault.copyWith(labelText: 'Name'),

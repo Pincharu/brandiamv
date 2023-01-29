@@ -58,17 +58,27 @@ class AdminOrdersPage extends StatelessWidget {
                           itemCount: order.products.length,
                           itemBuilder: (BuildContext ctx, int z) {
                             return ListTile(
-                              title: "Name: ${order.products[z]['name']}"
-                                  .toString()
-                                  .text
-                                  .size(16)
-                                  .make(),
-                              subtitle: "Quantity: ${order.products[z]['quantity']}"
-                                  .toString()
-                                  .text
-                                  .size(16)
-                                  .make(),
-                              trailing: SizedBox(
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  "Name: ${order.products[z]['name']}"
+                                      .toString()
+                                      .text
+                                      .size(16)
+                                      .make(),
+                                  "Quantity: ${order.products[z]['quantity']}"
+                                      .toString()
+                                      .text
+                                      .size(16)
+                                      .make(),
+                                  "Total ${(order.products[z]['quantity']) * double.parse((model.prices[z].text == '') ? "0" : model.prices[z].text)}"
+                                      .text
+                                      .size(16)
+                                      .make(),
+                                  10.heightBox,
+                                ],
+                              ),
+                              subtitle: SizedBox(
                                 height: 60,
                                 width: 240,
                                 child: Row(
@@ -86,12 +96,7 @@ class AdminOrdersPage extends StatelessWidget {
                                                   : model.prices[j].text));
                                         }
                                       },
-                                    ).expand(),
-                                    5.widthBox,
-                                    "Total ${(order.products[z]['quantity']) * double.parse((model.prices[z].text == '') ? "0" : model.prices[z].text)}"
-                                        .text
-                                        .size(16)
-                                        .make(),
+                                    ).expand()
                                   ],
                                 ),
                               ),
