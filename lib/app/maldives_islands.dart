@@ -1184,7 +1184,7 @@ List<String> getIslandList(String atoll) {
     case "DHAALU ATOLL":
       return dAtoll;
     case "THAA ATOLL":
-      return dAtoll;
+      return thAtoll;
     case "LAAMU ATOLL":
       return lAtoll;
     case "GAAFU ALIFU ATOLL":

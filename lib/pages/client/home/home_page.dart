@@ -56,7 +56,7 @@ class _HomeDetailsPageState extends State<HomeDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        toolbarHeight: context.screenWidth < 850 ? 150 : 120,
+        toolbarHeight: context.screenWidth < 850 ? 165 : 135,
         elevation: 0,
         flexibleSpace: SizedBox(
           width: context.screenWidth < 1200 ? context.screenWidth : 1200,
@@ -96,6 +96,12 @@ class _HomeDetailsPageState extends State<HomeDetailsPage> {
                     ),
                   ],
                 ),
+              ),
+              Container(
+                height: 25,
+                color: Colors.blue,
+                child: "ރަާއްޖޭގެ ހުރިހާ ރަށްތަކަށް ކޮންޝްޱްރަކްސަން ސަާމާނު ޑެލިވަރީ ކޮށްދެން."
+                    .marquee(textStyle: const TextStyle(fontSize: 16, color: Colors.white)),
               ),
             ],
           ),

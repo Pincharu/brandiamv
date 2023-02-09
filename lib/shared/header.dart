@@ -1,3 +1,6 @@
+import 'package:brandiamv/app/app_assets.dart';
+import 'package:brandiamv/shared/image_placer.dart';
+
 import 'snackbar.dart';
 
 import 'textfield.dart';
@@ -52,7 +55,11 @@ Widget loggedHeader(BuildContext context) {
                         throw 'Could not launch $url';
                       }
                     },
-                    child: const Icon(Icons.wechat_sharp, size: 14).p8()),
+                    child: const ImagePlacer(
+                      image: kimageWhatsapp,
+                      height: 14,
+                      width: 14,
+                    ).p8()),
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
                     onPressed: () {
@@ -107,7 +114,11 @@ Widget loggedHeader(BuildContext context) {
                     },
                     child: Row(
                       children: [
-                        const Icon(Icons.whatshot, size: 14),
+                        const ImagePlacer(
+                          image: kimageWhatsapp,
+                          height: 14,
+                          width: 14,
+                        ),
                         5.widthBox,
                         "Whatsapp".text.white.size(14).make(),
                       ],
@@ -182,7 +193,11 @@ Widget loggedOutHeader(BuildContext context) {
                         throw 'Could not launch $url';
                       }
                     },
-                    child: const Icon(Icons.whatshot, size: 14).p8()),
+                    child: const ImagePlacer(
+                      image: kimageWhatsapp,
+                      height: 14,
+                      width: 14,
+                    ).p8()),
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, elevation: 0),
                     onPressed: () {
@@ -224,7 +239,11 @@ Widget loggedOutHeader(BuildContext context) {
                     },
                     child: Row(
                       children: [
-                        const Icon(Icons.whatshot, size: 14),
+                        const ImagePlacer(
+                          image: kimageWhatsapp,
+                          height: 14,
+                          width: 14,
+                        ),
                         5.widthBox,
                         "Whatsapp".text.bold.white.size(14).make(),
                       ],
@@ -317,6 +336,7 @@ loginAlert(BuildContext context, AuthCore authCore) {
             ),
             TextField(
               controller: authCore.passwordTxt,
+              obscureText: true,
               decoration: textFieldDefault.copyWith(labelText: "Password"),
             ),
           ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../../shared/sync_report.dart';
@@ -52,6 +53,9 @@ class AdminOrdersPage extends StatelessWidget {
                       },
                       children: [
                         5.heightBox,
+                        "Name: ${order.name}".text.size(16).make().px12(),
+                        "Address: ${order.atoll}, ${order.island}".text.size(16).make().px12(),
+                        "Note: ${order.note}".selectableText.size(16).make().px12(),
                         ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -126,6 +130,13 @@ class AdminOrdersPage extends StatelessWidget {
                                       },
                                       child: "Share".text.size(18).bold.make().p4())
                                   .p4(),
+                              if (order.pdf != null)
+                                ElevatedButton(
+                                        onPressed: () {
+                                          launchUrlString(order.pdf!);
+                                        },
+                                        child: "Download receipt".text.size(18).bold.make().p4())
+                                    .px12(),
                               "Total: MVR ${orderTotal.value}".text.size(18).bold.make().p4(),
                             ],
                           ),
